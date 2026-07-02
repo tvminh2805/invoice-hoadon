@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        .header {
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { color: #4CAF50; font-size: 28px; }
+        .header .invoice-number { 
+            font-size: 18px; 
+            background: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .customer-info {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .customer-info p { margin: 5px 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        th:not(:first-child) { text-align: center; }
+        th:last-child { text-align: right; }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        td:not(:first-child) { text-align: center; }
+        td:last-child { text-align: right; }
+        tr:hover { background: #f5f5f5; }
+        .total-row {
+            font-weight: bold;
+            font-size: 18px;
+            background: #f0f0f0;
+        }
+        .total-row td { padding: 15px; }
+        .total-row td:last-child { 
+            color: #4CAF50;
+            font-size: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .no-print { 
+            text-align: center; 
+            margin-top: 20px;
+        }
+        .btn-print {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-print:hover { 
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        .btn-close {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+        .btn-close:hover { background: #555; }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .invoice-container { 
+                box-shadow: none; 
+                padding: 20px;
+            }
+            body { background: white; }
+        }
+        @media (max-width: 600px) {
+            .invoice-container { padding: 20px; }
+            .header { flex-direction: column; align-items: start; }
+            .header h1 { font-size: 22px; }
+            table { font-size: 14px; }
+            td, th { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container" id="invoiceContent">
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <div>⏳ Đang tải hóa đơn...</div>
+        </div>
+        
+        <!-- Nội dung hóa đơn (ẩn lúc đầu) -->
+        <div id="invoiceData" style="display:none;">
+            <div class="header">
+                <h1>🧾 HÓA ĐƠN</h1>
+                <div class="invoice-number">#<span id="maDon"></span></div>
+            </div>
+            
+            <div class="customer-info">
+                <p><strong>Khách hàng:</strong> <span id="khachHang"></span></p>
+                <p><strong>Ngày bán:</strong> <span id="ngayBan"></span></p>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:8%;">STT</th>
+                        <th style="width:42%;">Tên hàng hóa</th>
+                        <th style="width:15%;">SL</th>
+                        <th style="width:20%;">Đơn giá</th>
+                        <th style="width:15%;">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody id="detailRows"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align:right;">Tổng cộng:</td>
+                        <td id="tongTien">0 VNĐ</td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <div class="footer">
+                <p><em>Cảm ơn quý khách đã mua hàng!</em></p>
+                <p style="font-size:14px; margin-top:5px;">Mọi thắc mắc vui lòng liên hệ: 0123 456 789</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ In hóa đơn</button>
+        <button class="btn-close" onclick="window.close()">✖️ Đóng</button>
+    </div>
+
+    <script>
+        // Lấy mã đơn từ URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const maDon = urlParams.get('maDon');
+        
+        if (!maDon) {
+            document.getElementById('loading').innerHTML = 
+                '<div class="error">❌ Không có mã đơn hàng</div>';
+        } else {
+            // === THAY URL NÀY BẰNG URL CỦA BẠN ===
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNTWdRVvONulNqMc8KKUHuYQTapbKCyhiODGHWFt9MGWVAzlLwT7m0KTwI5F6jI_Jn/exec';
+            
+            fetch(`${SCRIPT_URL}?maDon=${maDon}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Lỗi không xác định');
+                    }
+                    
+                    // Hiển thị dữ liệu
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('invoiceData').style.display = 'block';
+                    
+                    // Điền thông tin chính
+                    document.getElementById('maDon').textContent = data.maDon;
+                    document.getElementById('khachHang').textContent = data.khachHang;
+                    document.getElementById('ngayBan').textContent = data.ngay;
+                    
+                    // Định dạng tổng tiền
+                    document.getElementById('tongTien').textContent = 
+                        Number(data.tongTien).toLocaleString('vi-VN') + ' VNĐ';
+                    
+                    // Thêm chi tiết sản phẩm
+                    const tbody = document.getElementById('detailRows');
+                    if (data.chiTiet.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Không có sản phẩm</td></tr>`;
+                    } else {
+                        data.chiTiet.forEach((item, index) => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td style="text-align:left;">${item.tenSanPham}</td>
+                                    <td>${item.soLuong}</td>
+                                    <td>${Number(item.donGia).toLocaleString('vi-VN')}</td>
+                                    <td>${Number(item.thanhTien).toLocaleString('vi-VN')}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                    
+                    // Tự động bật in sau 1.5 giây
+                    setTimeout(() => {
+                        window.print();
+                    }, 1500);
+                })
+                .catch(error => {
+                    document.getElementById('loading').innerHTML = 
+                        `<div class="error">❌ Lỗi: ${error.message}</div>`;
+                });
+        }
+    </script>
+</body>
+</html>
