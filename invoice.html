@@ -320,7 +320,6 @@
         } else {
             // === THAY URL NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN ===
             const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNTWdRVvONulNqMc8KKUHuYQTapbKCyhiODGHWFt9MGWVAzlLwT7m0KTwI5F6jI_Jn/exec';
-
             fetch(`${SCRIPT_URL}?maDon=${maDon}`)
                 .then(res => res.json())
                 .then(data => {
