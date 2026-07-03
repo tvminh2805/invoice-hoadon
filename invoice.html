@@ -3,252 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hóa đơn</title>
+    <title>Hóa đơn nhiệt</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif; 
-            background: #f5f5f5;
-            padding: 20px;
+        /* === RESET & CẤU HÌNH IN 80MM === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .invoice-container {
-            max-width: 800px;
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+            width: 80mm;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* Container chính - khổ 80mm */
+        .invoice-80mm {
+            width: 80mm;
+            padding: 2mm 3mm;
             margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 40px;
+            background: #fff;
         }
+
+        /* === CÁC THÀNH PHẦN CỦA HÓA ĐƠN === */
         .header {
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
         }
-        .header h1 { color: #4CAF50; font-size: 28px; }
-        .header .invoice-number { 
-            font-size: 18px; 
-            background: #f0f0f0;
-            padding: 8px 16px;
-            border-radius: 4px;
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .header .invoice-number {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .header .store-name {
+            font-size: 13px;
             font-weight: bold;
         }
-        .customer-info {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+
+        .header .store-info {
+            font-size: 10px;
+            color: #333;
         }
-        .customer-info p { margin: 5px 0; }
+
+        /* Thông tin khách hàng */
+        .customer-info {
+            border-bottom: 1px dashed #000;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+
+        .customer-info p {
+            margin: 2px 0;
+        }
+
+        .customer-info .label {
+            font-weight: bold;
+        }
+
+        /* Bảng sản phẩm */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            font-size: 11px;
+            margin: 4px 0;
         }
-        th {
-            background: #4CAF50;
-            color: white;
-            padding: 12px;
+
+        table th {
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding: 4px 0;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        table td {
+            padding: 3px 0;
+            border-bottom: 1px dotted #ccc;
+            vertical-align: top;
+        }
+
+        /* Căn chỉnh các cột */
+        .col-stt {
+            width: 8%;
+            text-align: center;
+        }
+        .col-name {
+            width: 40%;
             text-align: left;
+            padding-right: 4px;
         }
-        th:not(:first-child) { text-align: center; }
-        th:last-child { text-align: right; }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+        .col-qty {
+            width: 12%;
+            text-align: center;
         }
-        td:not(:first-child) { text-align: center; }
-        td:last-child { text-align: right; }
-        tr:hover { background: #f5f5f5; }
+        .col-price {
+            width: 18%;
+            text-align: right;
+            padding-right: 4px;
+        }
+        .col-amount {
+            width: 22%;
+            text-align: right;
+        }
+
+        /* Tổng tiền */
         .total-row {
             font-weight: bold;
-            font-size: 18px;
-            background: #f0f0f0;
+            font-size: 14px;
+            border-top: 2px solid #000;
+            padding-top: 6px;
+            margin-top: 4px;
         }
-        .total-row td { padding: 15px; }
-        .total-row td:last-child { 
-            color: #4CAF50;
-            font-size: 20px;
+
+        .total-row td {
+            border-bottom: none !important;
+            padding: 6px 0;
         }
+
+        .total-row .total-label {
+            text-align: right;
+            padding-right: 8px;
+        }
+
+        .total-row .total-value {
+            text-align: right;
+            font-size: 16px;
+        }
+
+        /* Phần footer */
         .footer {
-            margin-top: 30px;
             text-align: center;
-            color: #666;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
+            border-top: 1px dashed #000;
+            padding-top: 6px;
+            margin-top: 8px;
+            font-size: 10px;
+            color: #333;
         }
-        .no-print { 
-            text-align: center; 
-            margin-top: 20px;
+
+        .footer p {
+            margin: 2px 0;
         }
-        .btn-print {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
+
+        .footer .thank-you {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 4px 0;
         }
-        .btn-print:hover { 
-            background: #45a049;
-            transform: scale(1.05);
-        }
-        .btn-close {
-            background: #666;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-left: 10px;
-        }
-        .btn-close:hover { background: #555; }
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
-            color: #666;
-        }
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 4px;
-            text-align: center;
-        }
+
+        /* === ĐIỀU CHỈNH KHI IN === */
         @media print {
-            .no-print { display: none !important; }
-            .invoice-container { 
-                box-shadow: none; 
-                padding: 20px;
+            body {
+                width: 80mm;
+                margin: 0;
+                padding: 0;
+                background: #fff;
             }
-            body { background: white; }
+
+            .invoice-80mm {
+                width: 80mm;
+                padding: 1mm 2mm;
+            }
+
+            /* Ẩn nút in khi in */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Ngắt trang sau mỗi hóa đơn */
+            .page-break {
+                page-break-after: always;
+            }
+
+            /* Tối ưu cho máy in nhiệt */
+            table {
+                page-break-inside: avoid;
+            }
         }
-        @media (max-width: 600px) {
-            .invoice-container { padding: 20px; }
-            .header { flex-direction: column; align-items: start; }
-            .header h1 { font-size: 22px; }
-            table { font-size: 14px; }
-            td, th { padding: 8px; }
+
+        /* === NÚT IN (chỉ hiển thị trên màn hình) === */
+        .no-print {
+            text-align: center;
+            padding: 15px 0;
+            background: #f5f5f5;
+            width: 100%;
+        }
+
+        .no-print button {
+            padding: 10px 25px;
+            font-size: 14px;
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .no-print button:hover {
+            background: #45a049;
+        }
+
+        /* Loading & Error */
+        .loading, .error {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 13px;
+        }
+        .error { color: #c62828; }
+
+        /* Hỗ trợ màn hình nhỏ */
+        @media screen and (max-width: 80mm) {
+            body {
+                width: 100%;
+            }
+            .invoice-80mm {
+                width: 100%;
+                padding: 2mm 3mm;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="invoice-container" id="invoiceContent">
+
+    <!-- ====== PHẦN HÓA ĐƠN (KHỔ 80MM) ====== -->
+    <div class="invoice-80mm" id="invoiceContent">
         <!-- Loading -->
-        <div id="loading" class="loading">
-            <div>⏳ Đang tải hóa đơn...</div>
-        </div>
-        
+        <div id="loading" class="loading">⏳ Đang tải hóa đơn...</div>
+
         <!-- Nội dung hóa đơn (ẩn lúc đầu) -->
         <div id="invoiceData" style="display:none;">
+
+            <!-- HEADER -->
             <div class="header">
-                <h1>🧾 HÓA ĐƠN</h1>
+                <div class="store-name">☕ Tạp hóa Minh</div>
+                <div class="store-info">Long Giang, CM, An Giang</div>
+                <div class="store-info">ĐT: 0974.113120</div>
+                <h1>HÓA ĐƠN</h1>
                 <div class="invoice-number">#<span id="maDon"></span></div>
             </div>
-            
+
+            <!-- THÔNG TIN KHÁCH HÀNG -->
             <div class="customer-info">
-                <p><strong>Khách hàng:</strong> <span id="khachHang"></span></p>
-                <p><strong>Ngày bán:</strong> <span id="ngayBan"></span></p>
+                <p><span class="label">Khách hàng:</span> <span id="khachHang"></span></p>
+                <p><span class="label">Ngày:</span> <span id="ngayBan"></span></p>
+                <p><span class="label">NV:</span> <span id="nhanVien">Admin</span></p>
             </div>
-            
+
+            <!-- BẢNG SẢN PHẨM -->
             <table>
                 <thead>
                     <tr>
-                        <th style="width:8%;">STT</th>
-                        <th style="width:42%;">Tên hàng hóa</th>
-                        <th style="width:15%;">SL</th>
-                        <th style="width:20%;">Đơn giá</th>
-                        <th style="width:15%;">Thành tiền</th>
+                        <th class="col-stt">STT</th>
+                        <th class="col-name">Tên hàng</th>
+                        <th class="col-qty">SL</th>
+                        <th class="col-price">ĐG</th>
+                        <th class="col-amount">TT</th>
                     </tr>
                 </thead>
-                <tbody id="detailRows"></tbody>
+                <tbody id="detailRows">
+                    <!-- JS sẽ chèn dữ liệu vào đây -->
+                </tbody>
                 <tfoot>
                     <tr class="total-row">
-                        <td colspan="4" style="text-align:right;">Tổng cộng:</td>
-                        <td id="tongTien">0 VNĐ</td>
+                        <td colspan="4" class="total-label">TỔNG CỘNG</td>
+                        <td class="total-value" id="tongTien">0</td>
                     </tr>
                 </tfoot>
             </table>
-            
+
+            <!-- FOOTER -->
             <div class="footer">
-                <p><em>Cảm ơn quý khách đã mua hàng!</em></p>
-                <p style="font-size:14px; margin-top:5px;">Mọi thắc mắc vui lòng liên hệ: 0123 456 789</p>
+                <p class="thank-you">CẢM ƠN QUÝ KHÁCH!</p>
+                <p>Vui lòng kiểm tra kỹ đơn hàng</p>
+                <p>--- Hóa đơn xuất từ POS MINH ---</p>
             </div>
+
         </div>
     </div>
 
+    <!-- ====== NÚT IN (chỉ hiển thị trên màn hình) ====== -->
     <div class="no-print">
-        <button class="btn-print" onclick="window.print()">🖨️ In hóa đơn</button>
-        <button class="btn-close" onclick="window.close()">✖️ Đóng</button>
+        <button onclick="window.print()">🖨️ In nhanh</button>
+        <button onclick="window.close()" style="background:#666; margin-left:10px;">✖️ Đóng</button>
     </div>
 
+    <!-- ====== JAVASCRIPT ====== -->
     <script>
-        // Lấy mã đơn từ URL
         const urlParams = new URLSearchParams(window.location.search);
         const maDon = urlParams.get('maDon');
-        
+
         if (!maDon) {
-            document.getElementById('loading').innerHTML = 
+            document.getElementById('loading').innerHTML =
                 '<div class="error">❌ Không có mã đơn hàng</div>';
         } else {
-            // === THAY URL NÀY BẰNG URL CỦA BẠN ===
+            // === THAY URL NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN ===
             const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNTWdRVvONulNqMc8KKUHuYQTapbKCyhiODGHWFt9MGWVAzlLwT7m0KTwI5F6jI_Jn/exec';
-            
+
             fetch(`${SCRIPT_URL}?maDon=${maDon}`)
                 .then(res => res.json())
                 .then(data => {
                     if (!data.success) {
                         throw new Error(data.error || 'Lỗi không xác định');
                     }
-                    
+
                     // Hiển thị dữ liệu
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('invoiceData').style.display = 'block';
-                    
-                    // Điền thông tin chính
+
+                    // Điền thông tin
                     document.getElementById('maDon').textContent = data.maDon;
                     document.getElementById('khachHang').textContent = data.khachHang;
                     document.getElementById('ngayBan').textContent = data.ngay;
-                    
-                    // Định dạng tổng tiền
-                    document.getElementById('tongTien').textContent = 
-                        Number(data.tongTien).toLocaleString('vi-VN') + ' VNĐ';
-                    
+
+                    // Định dạng tiền tệ (không dấu chấm, ngắn gọn)
+                    const formatMoney = (num) => {
+                        return Number(num).toLocaleString('vi-VN') + 'đ';
+                    };
+
+                    document.getElementById('tongTien').textContent = formatMoney(data.tongTien);
+
                     // Thêm chi tiết sản phẩm
                     const tbody = document.getElementById('detailRows');
                     if (data.chiTiet.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Không có sản phẩm</td></tr>`;
+                        tbody.innerHTML =
+                            `<tr><td colspan="5" style="text-align:center;">Không có sản phẩm</td></tr>`;
                     } else {
                         data.chiTiet.forEach((item, index) => {
                             tbody.innerHTML += `
                                 <tr>
-                                    <td>${index + 1}</td>
-                                    <td style="text-align:left;">${item.tenSanPham}</td>
-                                    <td>${item.soLuong}</td>
-                                    <td>${Number(item.donGia).toLocaleString('vi-VN')}</td>
-                                    <td>${Number(item.thanhTien).toLocaleString('vi-VN')}</td>
+                                    <td class="col-stt">${index + 1}</td>
+                                    <td class="col-name">${item.tenSanPham}</td>
+                                    <td class="col-qty">${item.soLuong}</td>
+                                    <td class="col-price">${formatMoney(item.donGia)}</td>
+                                    <td class="col-amount">${formatMoney(item.thanhTien)}</td>
                                 </tr>
                             `;
                         });
                     }
-                    
-                    // Tự động bật in sau 1.5 giây
+
+                    // Tự động bật in sau 1.5 giây (để dữ liệu kịp hiển thị)
                     setTimeout(() => {
                         window.print();
                     }, 1500);
                 })
                 .catch(error => {
-                    document.getElementById('loading').innerHTML = 
+                    document.getElementById('loading').innerHTML =
                         `<div class="error">❌ Lỗi: ${error.message}</div>`;
                 });
         }
     </script>
+
 </body>
 </html>
