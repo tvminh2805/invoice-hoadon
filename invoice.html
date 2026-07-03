@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
+            font-family: Arial, Helvetica, sans-serif;
             background: #fff;
             margin: 0;
             padding: 0;
@@ -42,23 +42,27 @@
             font-size: 18px;
             font-weight: bold;
             letter-spacing: 2px;
-            margin: 0;
+            margin: 4px 0;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .header .invoice-number {
             font-size: 14px;
             font-weight: bold;
             margin-top: 2px;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .header .store-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .header .store-info {
             font-size: 10px;
             color: #333;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         /* Thông tin khách hàng */
@@ -67,6 +71,7 @@
             padding-bottom: 6px;
             margin-bottom: 6px;
             font-size: 11px;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .customer-info p {
@@ -83,6 +88,7 @@
             border-collapse: collapse;
             font-size: 11px;
             margin: 4px 0;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         table th {
@@ -92,12 +98,14 @@
             padding: 4px 0;
             font-size: 10px;
             text-transform: uppercase;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         table td {
             padding: 3px 0;
             border-bottom: 1px dotted #ccc;
             vertical-align: top;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         /* Căn chỉnh các cột */
@@ -131,6 +139,7 @@
             border-top: 2px solid #000;
             padding-top: 6px;
             margin-top: 4px;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .total-row td {
@@ -156,6 +165,7 @@
             margin-top: 8px;
             font-size: 10px;
             color: #333;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .footer p {
@@ -166,6 +176,7 @@
             font-size: 12px;
             font-weight: bold;
             margin: 4px 0;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         /* === ĐIỀU CHỈNH KHI IN === */
@@ -182,17 +193,14 @@
                 padding: 1mm 2mm;
             }
 
-            /* Ẩn nút in khi in */
             .no-print {
                 display: none !important;
             }
 
-            /* Ngắt trang sau mỗi hóa đơn */
             .page-break {
                 page-break-after: always;
             }
 
-            /* Tối ưu cho máy in nhiệt */
             table {
                 page-break-inside: avoid;
             }
@@ -214,10 +222,19 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .no-print button:hover {
             background: #45a049;
+        }
+
+        .no-print button:last-child {
+            background: #666;
+            margin-left: 10px;
+        }
+        .no-print button:last-child:hover {
+            background: #555;
         }
 
         /* Loading & Error */
@@ -225,6 +242,7 @@
             text-align: center;
             padding: 20px 0;
             font-size: 13px;
+            font-family: Arial, Helvetica, sans-serif;
         }
         .error { color: #c62828; }
 
@@ -253,8 +271,8 @@
             <!-- HEADER -->
             <div class="header">
                 <div class="store-name">☕ Tạp hóa Minh</div>
-                <div class="store-info">Long Giang, CM, An Giang</div>
-                <div class="store-info">ĐT: 0974.113120</div>
+                <div class="store-info">Long Giang, CM, AG</div>
+                <div class="store-info">ĐT: 0974 113 120</div>
                 <h1>HÓA ĐƠN</h1>
                 <div class="invoice-number">#<span id="maDon"></span></div>
             </div>
@@ -291,8 +309,8 @@
             <!-- FOOTER -->
             <div class="footer">
                 <p class="thank-you">CẢM ƠN QUÝ KHÁCH!</p>
-                <p>Vui lòng kiểm tra kỹ đơn hàng</p>
-                <p>--- Hóa đơn xuất từ POS MINH ---</p>
+                <p>Hàng đã bán không đổi trả</p>
+                <p>--- Hóa đơn xuất từ phần mềm ---</p>
             </div>
 
         </div>
@@ -300,8 +318,8 @@
 
     <!-- ====== NÚT IN (chỉ hiển thị trên màn hình) ====== -->
     <div class="no-print">
-        <button onclick="window.print()">🖨️ In nhanh</button>
-        <button onclick="window.close()" style="background:#666; margin-left:10px;">✖️ Đóng</button>
+        <button onclick="window.print()">🖨️ In hóa đơn nhiệt</button>
+        <button onclick="window.close()">✖️ Đóng</button>
     </div>
 
     <!-- ====== JAVASCRIPT ====== -->
@@ -332,7 +350,7 @@
                     document.getElementById('khachHang').textContent = data.khachHang;
                     document.getElementById('ngayBan').textContent = data.ngay;
 
-                    // Định dạng tiền tệ (không dấu chấm, ngắn gọn)
+                    // Định dạng tiền tệ
                     const formatMoney = (num) => {
                         return Number(num).toLocaleString('vi-VN') + 'đ';
                     };
@@ -358,7 +376,7 @@
                         });
                     }
 
-                    // Tự động bật in sau 1.5 giây (để dữ liệu kịp hiển thị)
+                    // Tự động bật in sau 1.5 giây
                     setTimeout(() => {
                         window.print();
                     }, 1500);
