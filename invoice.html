@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn bán hàng</title>
+    <style>
+        /* === RESET & CẤU HÌNH IN 80MM === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+            width: 80mm;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #000; /* TẤT CẢ MÀU ĐEN */
+        }
+
+        .invoice-80mm {
+            width: 80mm;
+            padding: 2mm 3mm;
+            margin: 0 auto;
+            background: #fff;
+        }
+
+        /* === HEADER === */
+        .header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+        }
+
+        .header .store-name {
+            font-size: 15px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .header .store-info {
+            font-size: 10px;
+            color: #000;
+        }
+
+        .header h1 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 4px 0;
+            color: #000;
+        }
+
+        .header .invoice-number {
+            font-size: 13px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* === THÔNG TIN KHÁCH HÀNG === */
+        .customer-info {
+            border-bottom: 1px dashed #000;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .customer-info p {
+            margin: 2px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .customer-info .label {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .customer-info span {
+            color: #000;
+        }
+
+        /* === BẢNG SẢN PHẨM === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin: 4px 0;
+            color: #000;
+        }
+
+        table th {
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding: 4px 0;
+            font-size: 9px;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        table td {
+            padding: 3px 0;
+            border-bottom: 1px dotted #000;
+            vertical-align: top;
+            color: #000;
+        }
+
+        .col-stt { width: 7%; text-align: center; }
+        .col-name { width: 35%; text-align: left; padding-right: 4px; }
+        .col-dvt { width: 8%; text-align: center; }
+        .col-qty { width: 10%; text-align: center; }
+        .col-price { width: 18%; text-align: right; padding-right: 4px; }
+        .col-amount { width: 22%; text-align: right; }
+
+        /* === THÔNG TIN THANH TOÁN === */
+        .payment-info {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding: 6px 0;
+            margin: 6px 0;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .payment-info .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            color: #000;
+        }
+
+        .payment-info .label {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .payment-info .total-amount {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000; /* ĐEN THAY VÌ ĐỎ */
+        }
+
+        .payment-info .debt {
+            font-weight: bold;
+            color: #000; /* ĐEN THAY VÌ ĐỎ */
+        }
+
+        .payment-info .paid {
+            font-weight: bold;
+            color: #000; /* ĐEN THAY VÌ XANH */
+        }
+
+        .payment-info span {
+            color: #000;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            border-top: 1px dashed #000;
+            padding-top: 6px;
+            margin-top: 8px;
+            font-size: 9px;
+            color: #000;
+        }
+
+        .footer .thank-you {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 4px 0;
+            color: #000;
+        }
+
+        .footer .debt-note {
+            font-weight: bold;
+            font-size: 10px;
+            margin: 4px 0;
+            color: #000; /* ĐEN THAY VÌ ĐỎ */
+        }
+
+        .footer p {
+            color: #000;
+        }
+
+        /* === IN ẤN === */
+        @media print {
+            body {
+                width: 80mm;
+                margin: 0;
+                padding: 0;
+                background: #fff;
+            }
+            .invoice-80mm {
+                width: 80mm;
+                padding: 1mm 2mm;
+            }
+            .no-print {
+                display: none !important;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            /* Đảm bảo tất cả đều đen khi in */
+            * {
+                color: #000 !important;
+                border-color: #000 !important;
+            }
+        }
+
+        /* === NÚT IN === */
+        .no-print {
+            text-align: center;
+            padding: 15px 0;
+            background: #f5f5f5;
+            width: 100%;
+        }
+
+        .no-print button {
+            padding: 10px 25px;
+            font-size: 14px;
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .no-print button:hover {
+            background: #45a049;
+        }
+
+        .no-print button:last-child {
+            background: #666;
+            margin-left: 10px;
+        }
+        .no-print button:last-child:hover {
+            background: #555;
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 13px;
+            color: #000;
+        }
+        .error { 
+            color: #000;
+            font-weight: bold;
+        }
+
+        @media screen and (max-width: 80mm) {
+            body { width: 100%; }
+            .invoice-80mm { width: 100%; padding: 2mm 3mm; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invoice-80mm" id="invoiceContent">
+        <!-- Loading -->
+        <div id="loading" class="loading">⏳ Đang tải hóa đơn...</div>
+
+        <!-- Nội dung hóa đơn -->
+        <div id="invoiceData" style="display:none;">
+
+            <!-- HEADER -->
+            <div class="header">
+                <div class="store-name">☕ Tạp hóa MINH</div>
+                <div class="store-info">Long Giang, CM, AG</div>
+                <div class="store-info">ĐT: 0974.11312</div>
+                <h1>HÓA ĐƠN</h1>
+                <div class="invoice-number">#<span id="maDon"></span></div>
+            </div>
+
+            <!-- THÔNG TIN KHÁCH HÀNG -->
+            <div class="customer-info">
+                <p><span class="label">Khách hàng:</span> <span id="tenKH"></span></p>
+                <p><span class="label">Ngày thanh toán:</span> <span id="ngayThanhToan"></span></p>
+                <p><span class="label">Loại giao dịch:</span> <span id="loaiGD"></span></p>
+                <p><span class="label">NV bán hàng:</span> <span id="nhanVien">Admin</span></p>
+            </div>
+
+            <!-- BẢNG SẢN PHẨM -->
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-stt">STT</th>
+                        <th class="col-name">Tên hàng</th>
+                        <th class="col-dvt">ĐVT</th>
+                        <th class="col-qty">SL</th>
+                        <th class="col-price">ĐG</th>
+                        <th class="col-amount">TT</th>
+                    </tr>
+                </thead>
+                <tbody id="detailRows"></tbody>
+            </table>
+
+            <!-- THÔNG TIN THANH TOÁN -->
+            <div class="payment-info" id="paymentInfo">
+                <div class="row">
+                    <span class="label">Tổng tiền hàng:</span>
+                    <span id="tongTienHang">0</span>
+                </div>
+                <div class="row" id="noCuRow">
+                    <span class="label">Nợ cũ:</span>
+                    <span id="noCu">0</span>
+                </div>
+                <div class="row" style="border-top:1px solid #000; padding-top:4px; margin-top:4px;">
+                    <span class="label">Tổng thanh toán:</span>
+                    <span class="total-amount" id="tongThanhToan">0</span>
+                </div>
+                <div class="row">
+                    <span class="label">Tiền khách đưa:</span>
+                    <span id="tienKhachDua">0</span>
+                </div>
+                <div class="row" style="border-top:1px solid #000; padding-top:4px;">
+                    <span class="label">Tiền thừa / Nợ:</span>
+                    <span id="tienThuaNo">0</span>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="footer">
+                <p class="thank-you">CÁM ƠN QUÝ KHÁCH!</p>
+                <p id="debtNote" class="debt-note"></p>
+                <p>Vui lòng kiểm tra kỹ đơn hàng</p>
+                <p>--- Hóa đơn xuất từ POS Minh ---</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- NÚT IN -->
+    <div class="no-print">
+        <button onclick="window.print()">🖨️ In hóa đơn</button>
+        <button onclick="window.close()">✖️ Đóng</button>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const maDon = urlParams.get('maDon');
+
+        if (!maDon) {
+            document.getElementById('loading').innerHTML =
+                '<div class="error">❌ Không có mã đơn hàng</div>';
+        } else {
+            // === THAY URL NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN ===
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNTWdRVvONulNqMc8KKUHuYQTapbKCyhiODGHWFt9MGWVAzlLwT7m0KTwI5F6jI_Jn/exec';
+
+            fetch(`${SCRIPT_URL}?maDon=${maDon}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Lỗi không xác định');
+                    }
+
+                    // Hiển thị dữ liệu
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('invoiceData').style.display = 'block';
+
+                    // === ĐIỀN THÔNG TIN ===
+                    const formatMoney = (num) => {
+                        return Number(num).toLocaleString('vi-VN') + 'đ';
+                    };
+
+                    document.getElementById('maDon').textContent = data.maDon;
+                    document.getElementById('tenKH').textContent = data.tenKH;
+                    document.getElementById('ngayThanhToan').textContent = data.ngay || 'Chưa thanh toán';
+                    document.getElementById('loaiGD').textContent = data.loaiGD;
+
+                    // === CHI TIẾT SẢN PHẨM ===
+                    const tbody = document.getElementById('detailRows');
+                    if (data.chiTiet.length === 0) {
+                        tbody.innerHTML =
+                            `<tr><td colspan="6" style="text-align:center;color:#000;">Không có sản phẩm</td></tr>`;
+                    } else {
+                        data.chiTiet.forEach((item, index) => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td class="col-stt">${index + 1}</td>
+                                    <td class="col-name">${item.tenSanPham}</td>
+                                    <td class="col-dvt">${item.dvt}</td>
+                                    <td class="col-qty">${item.soLuong}</td>
+                                    <td class="col-price">${formatMoney(item.donGia)}</td>
+                                    <td class="col-amount">${formatMoney(item.thanhTien)}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    // === THÔNG TIN THANH TOÁN ===
+                    const tt = data.thanhToan;
+                    document.getElementById('tongTienHang').textContent = formatMoney(tt.tongTienHang || 0);
+
+                    // Nếu nợ cũ > 0 thì hiển thị
+                    const noCu = tt.noCu || 0;
+                    if (noCu > 0) {
+                        document.getElementById('noCu').textContent = formatMoney(noCu);
+                    } else {
+                        document.getElementById('noCuRow').style.display = 'none';
+                    }
+
+                    document.getElementById('tongThanhToan').textContent = formatMoney(tt.tongThanhToan || 0);
+                    document.getElementById('tienKhachDua').textContent = formatMoney(tt.tienKhachDua || 0);
+
+                    // Xử lý tiền thừa / nợ (tất cả màu đen)
+                    const tienThuaNo = tt.tienThuaNo || 0;
+                    const tienThuaNoSpan = document.getElementById('tienThuaNo');
+                    if (tienThuaNo >= 0) {
+                        tienThuaNoSpan.textContent = formatMoney(tienThuaNo);
+                    } else {
+                        tienThuaNoSpan.textContent = '-' + formatMoney(Math.abs(tienThuaNo));
+                    }
+
+                    // === GHI CHÚ CÔNG NỢ ===
+                    const debtNote = document.getElementById('debtNote');
+                    if (tienThuaNo < 0) {
+                        debtNote.textContent = '⚠️ Quý khách còn nợ: ' + formatMoney(Math.abs(tienThuaNo));
+                        debtNote.style.display = 'block';
+                    } else if (noCu > 0) {
+                        debtNote.textContent = '✅ Đã thanh toán';
+                    } else {
+                        debtNote.style.display = 'none';
+                    }
+
+                    // Tự động in sau 1.5 giây
+                    setTimeout(() => {
+                        window.print();
+                    }, 1500);
+                })
+                .catch(error => {
+                    document.getElementById('loading').innerHTML =
+                        `<div class="error">❌ Lỗi: ${error.message}</div>`;
+                });
+        }
+    </script>
+
+</body>
+</html>
