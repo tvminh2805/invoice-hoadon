@@ -388,7 +388,8 @@
                 <div class="store-name">MỘNG THẮM</div>
                 <div class="store-info">Long Giang, CM, AG</div>
                 <div class="store-info">ĐT: 0967.277377</div>
-                <h1>HÓA ĐƠN</h1>
+                <!-- TIÊU ĐỀ SẼ THAY ĐỔI THEO LoaiGD -->
+				<h1 id="invoiceTitle">HÓA ĐƠN BÁN HÀNG</h1>
                 <div class="invoice-number">#<span id="maDon"></span></div>
             </div>
 
@@ -411,7 +412,7 @@
 
             <!-- THÔNG TIN THANH TOÁN -->
             <div class="payment-info" id="paymentInfo">
-                <div class="row">
+                <div class="row" id="tongTienHangRow">
                     <span class="label">Tổng tiền hàng:</span>
                     <span id="tongTienHang">0</span>
                 </div>
@@ -419,7 +420,7 @@
                     <span class="label">Nợ cũ:</span>
                     <span id="noCu">0</span>
                 </div>
-                <div class="row" style="padding-top:4px; margin-top:4px;">
+                <div class="row" id="tongThanhToanRow"; padding-top:4px; margin-top:4px;">
                     <span class="label">Tổng thanh toán:</span>
                     <span class="total-amount" id="tongThanhToan">0</span>
                 </div>
@@ -427,8 +428,8 @@
                     <span class="label">Tiền khách đưa:</span>
                     <span id="tienKhachDua">0</span>
                 </div>
-                <div class="row" ;padding-top:4px;">
-                    <span class="label">Tiền thừa / Nợ:</span>
+                <div class="row" ; padding-top:4px;">
+                    <span class="label" id="thuaNoLabel">Tiền thừa / Nợ:</span>
                     <span id="tienThuaNo">0</span>
                 </div>
             </div>
@@ -465,6 +466,13 @@
                 return dateString;
             }
         }
+        // === MAP TIÊU ĐỀ THEO LOẠI GIAO DỊCH ===
+        const titleMap = {
+            'Bán hàng': 'HÓA ĐƠN BÁN HÀNG',
+            'Thu nợ': 'PHIẾU THU NỢ',
+            'Khách trả hàng': 'PHIẾU TRẢ HÀNG',
+            'Nhập công nợ KH': 'PHIẾU NHẬP CÔNG NỢ'
+        };
 
         const urlParams = new URLSearchParams(window.location.search);
         const maDon = urlParams.get('maDon');
@@ -490,36 +498,56 @@
                         return Number(num).toLocaleString('vi-VN') + 'đ';
                     };
 
+                    // === THAY ĐỔI TIÊU ĐỀ THEO LoaiGD ===
+                    const loaiGD = data.loaiGD || '';
+                    document.getElementById('invoiceTitle').textContent = titleMap[loaiGD] || 'HÓA ĐƠN BÁN HÀNG';
+
+                    // === ĐIỀN THÔNG TIN CHUNG ===
                     document.getElementById('maDon').textContent = data.maDon;
                     document.getElementById('tenKH').textContent = data.tenKH;
                     document.getElementById('ngayThanhToan').textContent = formatDate(data.ngay);
-                    document.getElementById('loaiGD').textContent = data.loaiGD;
+                    document.getElementById('loaiGD').textContent = loaiGD;
+
+                    // === XÁC ĐỊNH LOẠI GIAO DỊCH ĐỂ ẨN/HIỆN ===
+                    const isThuNoOrNhapNo = (loaiGD === 'Thu nợ' || loaiGD === 'Nhập công nợ KH');
+
+                    // Ẩn/hiện sản phẩm
+                    document.getElementById('productList').style.display = isThuNoOrNhapNo ? 'none' : 'block';
+
+                    // Ẩn/hiện các dòng thanh toán
+                    document.getElementById('tongTienHangRow').style.display = isThuNoOrNhapNo ? 'none' : 'flex';
+                    document.getElementById('tongThanhToanRow').style.display = isThuNoOrNhapNo ? 'none' : 'flex';
+
+                    // Đổi nhãn
+                    const thuaNoLabel = document.getElementById('thuaNoLabel');
+                    thuaNoLabel.textContent = isThuNoOrNhapNo ? 'Nợ còn lại:' : 'Tiền thừa / Nợ:';
 
                     // === HIỂN THỊ SẢN PHẨM ===
-                    const productList = document.getElementById('productList');
-                    const headerElement = productList.querySelector('.product-header');
-                    productList.innerHTML = '';
-                    productList.appendChild(headerElement);
+                    if (!isThuNoOrNhapNo) {
+                        const productList = document.getElementById('productList');
+                        const headerElement = productList.querySelector('.product-header');
+                        productList.innerHTML = '';
+                        productList.appendChild(headerElement);
 
-                    if (data.chiTiet.length === 0) {
-                        productList.innerHTML += '<div style="text-align:center;padding:10px 0;">Không có sản phẩm</div>';
-                    } else {
-                        let html = '';
-                        data.chiTiet.forEach((item, index) => {
-                            html += `
-                                <div class="product-row">
-                                    <div class="product-name">${index + 1}. ${item.tenSanPham}</div>
-                                    <div class="product-detail">
-                                        <span class="col-qty">${item.soLuong} (${item.dvt})</span>
-                                        <span class="col-price">${formatMoney(item.donGia)}</span>
-                                        <span class="col-amount">${formatMoney(item.thanhTien)}</span>
+                        if (data.chiTiet.length === 0) {
+                            productList.innerHTML += '<div style="text-align:center;padding:10px 0;">Không có sản phẩm</div>';
+                        } else {
+                            let html = '';
+                            data.chiTiet.forEach((item, index) => {
+                                html += `
+                                    <div class="product-row">
+                                        <div class="product-name">${index + 1}. ${item.tenSanPham}</div>
+                                        <div class="product-detail">
+                                            <span class="col-qty">${item.soLuong} (${item.dvt})</span>
+                                            <span class="col-price">${formatMoney(item.donGia)}</span>
+                                            <span class="col-amount">${formatMoney(item.thanhTien)}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
-                        });
-                        productList.innerHTML += html;
+                                `;
+                            });
+                            productList.innerHTML += html;
+                        }
                     }
-
                     // === THÔNG TIN THANH TOÁN ===
                     const tt = data.thanhToan;
                     document.getElementById('tongTienHang').textContent = formatMoney(tt.tongTienHang || 0);
