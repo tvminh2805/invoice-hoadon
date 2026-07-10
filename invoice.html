@@ -412,25 +412,29 @@
 
             <!-- THÔNG TIN THANH TOÁN -->
             <div class="payment-info" id="paymentInfo">
+                <!-- Tổng tiền hàng -->
                 <div class="row" id="tongTienHangRow">
                     <span class="label">Tổng tiền hàng:</span>
                     <span id="tongTienHang">0</span>
                 </div>
+				<!-- Nợ cũ -->
                 <div class="row" id="noCuRow">
                     <span class="label">Nợ cũ:</span>
                     <span id="noCu">0</span>
                 </div>
+				<!-- Tổng thanh toán -->
                 <div class="row" id="tongThanhToanRow"; padding-top:4px; margin-top:4px;">
                     <span class="label">Tổng thanh toán:</span>
                     <span class="total-amount" id="tongThanhToan">0</span>
                 </div>
+				<!-- Tiền khách đưa/trả/nợ thêm (label thay đổi theo LoaiGD) -->
                 <div class="row">
-                    <span class="label">Tiền khách đưa:</span>
+                    <span class="label" id="tienKhachDuaLabel">Tiền khách đưa</span>
                     <span id="tienKhachDua">0</span>
                 </div>
+				<!-- Tiền thừa / Còn nợ lại (label thay đổi theo logic) -->
                 <div class="row" ; padding-top:4px;">
-                    <!-- LABEL NÀY SẼ THAY ĐỔI DỰA TRÊN SO SÁNH Tiền khách đưa và Tổng thanh toán -->
-                    <span class="label" id="thuaNoLabel">Tiền thừa / Nợ:</span>
+					<span class="label" id="thuaNoLabel">Tiền thừa</span>
                     <span id="tienThuaNo">0</span>
                 </div>
             </div>
@@ -467,12 +471,21 @@
                 return dateString;
             }
         }
+
         // === MAP TIÊU ĐỀ THEO LOẠI GIAO DỊCH ===
         const titleMap = {
             'Bán hàng': 'HÓA ĐƠN BÁN HÀNG',
             'Thu nợ': 'PHIẾU THU NỢ',
             'Khách trả hàng': 'PHIẾU TRẢ HÀNG',
             'Nhập công nợ KH': 'PHIẾU NHẬP CÔNG NỢ'
+        };
+
+        // === MAP LABEL TIỀN KHÁCH ĐƯA THEO LOẠI GIAO DỊCH ===
+        const tienKhachDuaLabelMap = {
+            'Bán hàng': 'Tiền khách đưa',
+            'Khách trả hàng': 'Tiền khách đưa',
+            'Thu nợ': 'Tiền khách trả',
+            'Nhập công nợ KH': 'Tiền khách nợ thêm'
         };
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -498,11 +511,28 @@
                     const formatMoney = (num) => {
                         return Number(num).toLocaleString('vi-VN') + 'đ';
                     };
-
-                    // === THAY ĐỔI TIÊU ĐỀ THEO LoaiGD ===
+					
+                    // === LẤY DỮ LIỆU ===
                     const loaiGD = data.loaiGD || '';
+                    const tt = data.thanhToan;
+                    const tienKhachDua = Number(tt.tienKhachDua) || 0;
+                    const tongThanhToan = Number(tt.tongThanhToan) || 0;
+
+                    // === THAY ĐỔI TIÊU ĐỀ ===
                     document.getElementById('invoiceTitle').textContent = titleMap[loaiGD] || 'HÓA ĐƠN BÁN HÀNG';
 
+                    // === THAY ĐỔI LABEL TIỀN KHÁCH ĐƯA ===
+                    document.getElementById('tienKhachDuaLabel').textContent =
+                        tienKhachDuaLabelMap[loaiGD] || 'Tiền khách đưa';
+
+                    // === THAY ĐỔI LABEL TIỀN THỪA / CÒN NỢ ===
+                    const thuaNoLabel = document.getElementById('thuaNoLabel');
+                    if (tienKhachDua >= tongThanhToan) {
+                        thuaNoLabel.textContent = 'Tiền thừa';
+                    } else {
+                        thuaNoLabel.textContent = 'Còn nợ lại';
+                    }
+					
                     // === ĐIỀN THÔNG TIN CHUNG ===
                     document.getElementById('maDon').textContent = data.maDon;
                     document.getElementById('tenKH').textContent = data.tenKH;
@@ -518,9 +548,6 @@
                     // Ẩn/hiện các dòng thanh toán
                     document.getElementById('tongTienHangRow').style.display = isThuNoOrNhapNo ? 'none' : 'flex';
                     document.getElementById('tongThanhToanRow').style.display = isThuNoOrNhapNo ? 'none' : 'flex';
-
-                    // ===== THAY ĐỔI LABEL CỦA DÒNG "Tiền thừa / Nợ" DỰA TRÊN SO SÁNH =====
-                    // (BỎ LOGIC CŨ DỰA TRÊN isThuNoOrNhapNo)
 
                     // ===== HIỂN THỊ SẢN PHẨM =====
                     if (!isThuNoOrNhapNo) {
@@ -549,7 +576,6 @@
                         }
                     }
                     // === THÔNG TIN THANH TOÁN ===
-                    const tt = data.thanhToan;
                     document.getElementById('tongTienHang').textContent = formatMoney(tt.tongTienHang || 0);
 
                     const noCu = tt.noCu || 0;
@@ -570,15 +596,6 @@
                         tienThuaNoSpan.textContent = '-' + formatMoney(Math.abs(tienThuaNo));
                     }
 
-                    // ===== LABEL CHO TIỀN THỪA / NỢ =====
-                    const thuaNoLabel = document.getElementById('thuaNoLabel');
-                    const tienKhachDua = tt.tienKhachDua || 0;
-                    const tongThanhToan = tt.tongThanhToan || 0;
-                    if (tienKhachDua >= tongThanhToan) {
-                        thuaNoLabel.textContent = 'Tiền thừa:';
-                    } else {
-                        thuaNoLabel.textContent = 'Còn nợ lại:';
-                    }
                     // === GHI CHÚ CÔNG NỢ ===
                     const debtNote = document.getElementById('debtNote');
                     if (tienThuaNo < 0) {
