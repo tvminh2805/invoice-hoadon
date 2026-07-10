@@ -429,12 +429,12 @@
                 </div>
 				<!-- Tiền khách đưa/trả/nợ thêm (label thay đổi theo LoaiGD) -->
                 <div class="row">
-                    <span class="label" id="tienKhachDuaLabel">Tiền khách đưa</span>
+                    <span class="label" id="tienKhachDuaLabel">Tiền khách đưa:</span>
                     <span id="tienKhachDua">0</span>
                 </div>
 				<!-- Tiền thừa / Còn nợ lại (label thay đổi theo logic) -->
                 <div class="row" ; padding-top:4px;">
-					<span class="label" id="thuaNoLabel">Tiền thừa</span>
+					<span class="label" id="thuaNoLabel">Tiền thừa:</span>
                     <span id="tienThuaNo">0</span>
                 </div>
             </div>
@@ -482,10 +482,10 @@
 
         // === MAP LABEL TIỀN KHÁCH ĐƯA THEO LOẠI GIAO DỊCH ===
         const tienKhachDuaLabelMap = {
-            'Bán hàng': 'Tiền khách đưa',
-            'Khách trả hàng': 'Tiền khách đưa',
-            'Thu nợ': 'Tiền khách trả',
-            'Nhập công nợ KH': 'Tiền khách nợ thêm'
+            'Bán hàng': 'Tiền khách đưa:',
+            'Khách trả hàng': 'Tiền khách đưa:',
+            'Thu nợ': 'Tiền khách trả:',
+            'Nhập công nợ KH': 'Tiền khách nợ thêm:'
         };
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -523,14 +523,14 @@
 
                     // === THAY ĐỔI LABEL TIỀN KHÁCH ĐƯA ===
                     document.getElementById('tienKhachDuaLabel').textContent =
-                        tienKhachDuaLabelMap[loaiGD] || 'Tiền khách đưa';
+                        tienKhachDuaLabelMap[loaiGD] || 'Tiền khách đưa:';
 
                     // === THAY ĐỔI LABEL TIỀN THỪA / CÒN NỢ ===
                     const thuaNoLabel = document.getElementById('thuaNoLabel');
                     if (tienKhachDua >= tongThanhToan) {
-                        thuaNoLabel.textContent = 'Tiền thừa';
+                        thuaNoLabel.textContent = 'Tiền thừa:';
                     } else {
-                        thuaNoLabel.textContent = 'Còn nợ lại';
+                        thuaNoLabel.textContent = 'Còn nợ lại:';
                     }
 					
                     // === ĐIỀN THÔNG TIN CHUNG ===
