@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hóa đơn nhập hàng</title>
+    <title>Hóa đơn mua hàng</title>
     <style>
         /* === RESET & CẤU HÌNH IN 80MM === */
 		@page{
-			size: 80mm auto;
-			margin: 0;
+		size: 80mm auto;
+		margin: 0;
 		}
 		* {
             margin: 0;
@@ -33,13 +33,12 @@
         .invoice-80mm {
             width: 80mm;
             max-width: 100%;
-            padding: 2mm 3mm;
+            padding: 1mm 0.5mm;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 4px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-		
 		/* === HEADER === */
         .header {
             text-align: center;
@@ -52,6 +51,7 @@
 		.store-logo {
 			text-align: center;
 			margin-bottom: 4px;
+			
 		}
 		.store-logo img {
 			max-width: 60mm;
@@ -79,10 +79,9 @@
 
         .header .invoice-number {
             font-size: 13px;
-            font-weight: bold
+            font-weight: bold;
             color: #000;
         }
-		
 		/* === THÔNG TIN NHÀ CUNG CẤP === */
         .customer-info {
             border-bottom: 1px dashed #000;
@@ -118,7 +117,7 @@
             justify-content: space-between;
             font-size: 13px;
             font-weight: bold;
-            border-bottom: 1px dashed #000;
+            border-bottom: 1px solid #000;
             padding: 3px 0 4px 0;
             margin-bottom: 2px;
             text-transform: uppercase
@@ -158,11 +157,11 @@
 
         .product-detail {
             font-size: 13px;
-			font-style: italic;
             display: flex;
+			font-style: italic;
             justify-content: space-between;
             padding: 2px 0 4px 0;
-            padding-left: 8px;
+            padding-left: 4px;
         }
 
         .product-detail .col-qty {
@@ -179,9 +178,9 @@
         .product-detail .col-amount {
             width: 30%;
             text-align: right;
-            padding-right: 4px; 
+            padding-right: 4px;
+            
         }
-		
 		/* === THÔNG TIN THANH TOÁN === */
         .payment-info {
             border-top: 1px dashed #000
@@ -207,7 +206,8 @@
         .payment-info .total-amount {
             font-size: 13px;
             font-weight: bold;
-            color: #000; 
+            color: #000;
+            
         }
 
         .payment-info .debt {
@@ -232,7 +232,6 @@
             padding-top: 6px;
             margin-top: 8px;
             font-size: 13px;
-			font-style: italic;
             color: #000;
         }
 
@@ -253,16 +252,16 @@
         }
 
         .footer p {
-		
             color: #000;
         }
 
 		/* === IN ẤN === */
         @media print {
             @page {
-				margin: 0mm !important; /* QUAN TRỌNG: XÓA LỀ TRANG IN */
-				size: 80mm auto; /* Khổ giấy 80mm, chiều cao tự động */		
+                margin: 0mm !important;
+                size: 80mm auto;
             }
+
             body {
                 background: #fff !important;
                 padding: 0 !important;
@@ -277,18 +276,19 @@
                 width: 80mm !important;
                 max-width: 80mm !important;
                 padding: 1mm 2mm !important;
-                margin: 0 auto !important;
+                margin: 0 !important;
                 box-shadow: none !important;
                 border-radius: 0 !important;
                 background: #fff !important;
             }
-			/* Đảm bảo các phần tử con không có margin/padding thừa bên phải */
+
             .header, .customer-info, .product-list, .payment-info, .qr-section, .footer {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
                 margin-left: 1mm !important;
                 margin-right: 1mm !important;
             }
+
             .no-print {
                 display: none !important;
             }
@@ -373,25 +373,20 @@
 
     <div class="invoice-80mm" id="invoiceContent">
         <div id="loading" class="loading">⏳ Đang tải hóa đơn...</div>
-		
-        <!-- Nội dung hóa đơn -->
+
         <div id="invoiceData" style="display:none;">
-		
-            <!-- HEADER -->
+
             <div class="header">
-			    <!-- LOGO SHOP -->
 				<div class="store-logo">
 					<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANAAAAA5CAIAAADIjTJpAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABdTSURBVHhe7Z0HVBVXt8dNVFDAqIiiWBC7RhB775oYYwLYMEZ9GiPwrERBo0DsXWNJ9EszmqjYG9iwYQM1asCCDaNgw7zYY4wi4ve77OvkMnfuFVyQR8j9r71Y95zZ55yZc/6zyzTyPM8wnjx58scff+gLr4RHjx49fvxYX8gM/vzzT9rqCxnA06dPX21XpWFqaqq+nAGgz8zoCxlGZo8o1yAThLt69eqKFaEDB/r169c3MnKPvjbDePo0+eDBA+PHj+3Sxevzz2dnarqPHj06efJELy/PGTOmP3jwQF9rGgkJlxcuXOjt3c3ff1hiYqK+NgO4ceP6ypUrfX19+vb9H/ZWX2saUG3HjohRo0Z279516dKl+toMICbm55kzZ3h7dw8KGvPrr7/qa/8FyBDhmJ2IiO2HDx9KTtadyosXf1+6dKnhwz+RrS/FnTu39+/ft2vXzsuXL1E8d+5su3ZtGjasf/nyZVEwBcxhdHQUQ8fHX6D4yy+/vPPO27Vr14qLOy0Kxjh16mRERMTx48f4ff/+/b59+zg7l4mMjJStZnDu3Dmoc+jQITFXX3wxv1ixohMnTpCtxvjtt//bo8Nuocu+fXtdXd/08Hjv9u3boqAJOmcaOaKzZ89S/PXXmzC1SpVKBw8eFIVcj5cQLjw8jHm0ty/8xht2RYsWrly54pQpk6mHPeXKlRk5MlDUzGDw4EGws0iRQoUL25Uo4cCSXLt2DTfUsWOHWrVc79y5o9czQkhIUIUK5YsUeYOhixe379jxnUuXLrFgnTt7sUI3b97U673A8uXL3NxqwhL0adWgQT0xURg5B4eiR44cFjVjQN+2bVsrDStVqjB//jzqMeclShSDeaKmIDk52c/P18mpJEdUuHAhJ6dSH3/cHw/J+eDu7sZxoaBXTY/Zs2dVrOgiR+TgYN+qVcvjx49Tj8dwcnK8eDFe1HI3zBEuKuogs2NvX6RMGScRR8fi+fPnhUNsZT3YGhUVJcqaYCrz5Xu9VClHaQ7zbGwK1KxZA6uAhYDKOBS9anoMHPi/efO+xnBKQ1vbglWrVoasd+/erVOn9ogRw/Wqafj++0X0DGlEH2Hf4DcmiK09e/ZgpZOSkkTZEFeuJDo7ly1UyJYhpCGtrKzyTpo0ka2zZs2EGSqn3KHDW1ZW+ZSD4oe1dT5sdmrqsxMnYjGoCxcu0KsaYN68uUwFnUsrhoN2sBaTjCFv3boFO6lXzdUwR7j27dsyKViysmVLK5K29gW2bt2Kwvvvd8JiibIxoqOj7exs0DdsTm/W1vkHDx6IAgEZ5oTwWfQVnDp1Csth3LBAASsfn49RmDt3TsWKFR4+fCj6uM5y5Uqzlip9+Ica8dzvv//epElDzJix7end+0OYqjpGOERbdiMlJaVevTrTpk3Vaz9//vXXX0EvQ2URKsePH4fC6NGj6tat/ezZM9EX3Lt3Dx3OH8MmDMr8vP++bgLXrVuLGSZKFv1cDJOEI7xg3jkFDedIBDbgONDZsmUzvvLEiRPSRAUvLw80VW0RmIFtIx8k0ipevFhsbKy+wQuMGzcWe6ZqhaBcq5YbpDl27BiG58yZONHH1kIalTLCinLCtGjRjCYEji4u5TCc0kTw6NEfLi7OJUs6GjekQzFyfn4+nTt7ij5o374dAYZKH8EPtGrVAoWNGzdSxAyLviA0dLnmETHDjIXpJUJgT7Zt26ZvkHthknBE0Dga1QSJ4BHSnKkuzmWWxeqogHNJ88XprJQIpsvRscSZM2ewbbjX5cvVyV2PHt3pX9UKgf0MnZiYwPIQ3om7BGPHfmZqV4U6pJyocXpgtwz9HZQVL6xqhcBUIjN0QkKC27ZtI/oQt0aNaipDJUI/rVu3RCcsLAwffevWLWkiIHLAmKmaIAxNZEysmZqaiildtGiRvkHuhUnC4Uc050iEBe7TpxdqBE/MtbEv6NOn9xtvaJMAofmqVStRe/fdd4wzDy8vT5ZB1QSBqRi5uLg4XCRMxZaIfkDAcDNjsahwbtq0KWjOmfO5nV3B3bt3S8MDB/YzkCnC9er1ITozZ05v1KiB6N+7d7d8+XKYJZUyQnpB3o0OaRaEU+WqQ4YM0jwlGBonsGnTJnQ4dckqRD8XwyThYIymQxTB2DDv8fHxBFIkmxMmjNc3SwPpJH5T0x2LQOXPPgtBc8iQwaSf0kpBly6dTRGObjGNKsKNHBlghnAIe8KxbNiwHmVfXx+Kkgfs3LkDU2qKcL17686omTNnZIxwDoRu6GgSbsCA/nSoaoK8INwGdIiYp07VnRW5GyYJ16RJI8yJaoIMhaAkMDAATWIdptjweuygQQPNWEeEWe7RwxtNHFy1alVUtx+ynHAIDVndkydPEjvi+xo1avTo0aOsJRw+ER1NwhF1mCWc7kDIcw2zk9wKbcLBHmJYJyeNmVWkZMni5JgEKzdu3CCiWrToO2lLgMU8aq6KIlBZHBDejZAIiyhtBdlBOII5uIURevDgPgEAexgdHbVjR9YTLixsE4RTJQ0WwinQJlxsbAy5mOZKGApGTsIOYhRshlzgGDNmtGZGZiisGYSGqUlJN1hCLE3asHpkB+EQOEcA17VrZ5pANXLkbdu2ZjnhYE+xYsWUu1XsKn8thFOgTbhly5aa94kiGKo6ddyfPHly6tQpG5uCMTExYhpLliyh0lQJEw2l9u3bR3bWuHHDefPm6gdOQzYRTqRgQevRoz+VhmvXrslCwtWvXxcdPPXWrVvOnj178eLFCxfOSzrl4zPAbNLwryfcp5+OygjhENRWrFhOk+DgMfxlyl5q3kRo+J//LKSJt3c31kM36gtkK+HohKGXLFlMwywkHOeYm1tNqBYVFXXy5Ik00QFfsW/f3vfe62RvX0TVBLEQTg9PTw/NJTcW5pGZSklJwVYRKVevXhVOqHQ0hVX39x/GWMHBQS1aNJNxBdlKOISoEYmNjd2zZw/rnSWEQ+iH2WDPjYUmOHSVPmIhnA5Qx93dLYO8YcqKFCm0Y0cEDefOnWNrq3HFX1NYm06dOtJq6dIf8cL37t1LG1yH7CYca1+sWFFoNHnyJKiQVYRD6EpTVGqKsMlCuOdJSUksrZmraCphbfr06U3sQtRs/kqKoUCdWrVc5T4VrU6f/uuJo+wmHALnMHKsd7lyZVWbRF6NcJkVC+F02Ls3kllQTY0ZgQdVqlQiDtO852NKIDRy8WL8/fv3q1Wrsm7dOv3wfwvhROhQVaOIhXDZBA3CzZ8/P4MZwwspw8o5OBQ1qjcnMtfh4WGM2KZNK8NHHf82wpkRC+GyCRqE8/PzNXUvPGvFzq7gjBnTGbF//37e3t1ldJC1hHN0dDBjyUyJhXDZBA3CtW7dMrPm6tWERR0wQPdEBhMtNyIFWUg4VrRp08alS5fMLOcshMsmqAn3+PHjqlUrm7lyyxypal5ZSBVxpgy6YcMG4jnlbmwWEo7lXLZs2axZMzUfmDMjr0Y4CUyNxdSkWQj3/MKF8w4O9qYmiCXP7PkNRUz1RpJBugB7zp8/5+TkqDyJmYWEK1TI5ocflqDj7d3N1rag5sUwTXk1wrGHHKyxqNQUYdO/nXAbNqxn8TTnCH7gbbt376p50VxT6MfT08PZWfvSQ5kyuufbYmJ+fvLkibu7W2hoqOxDlhLO9ptvvkbn9u1beG26zSDnMks4JqdWLdeDBw/ExZ1OTEy4ciVRJCHh8okTJzp31n7Cz0K452SLxPKqeRFhavz8fKKjoyCcmbNWkbQ1cDt58qSbW01TPpp1Xb58GeN26tQxKChI9iFrCfftt9+I2vHjx9mNDF67ySzh2DG5l4rOjz/+kJKSIk0ElnupCtSE69mzRxGtx7sRpiwkJBidli1bEH6pthoL+vIOQZcuXqb6tLOzkT79/Yd6eXnp9iCrCSfPTU2Zonu2ccWKUEakH5WasbwC4eRpkd27d9nZ2aoeMbc8LaJATbiGDeubulvAUkk8NGPG9JfeoWcqIVlEhO6WF5QydWEPHaIrdBYuXODq6vr06VN+ZwfhmjdvOnv2bH4EBIwoWNBapWYsr0y4/fv3cezyyrcCC+EUpCPc3bt3iLfIqlTzgrDYEFFeLSbGp6ippgjKDRrUk+85rFy5whQhUJPljIyM5HdCQgK/s4NwHh7vBQfrTCno0OFt6s0HcxbCZRPSEe6nn46w0syCal4QZrlixQpJSUnykZiuXbswUyodQ8EEjh2re2vh6tUrZ87EwU5NR0Y9S0i3169fI7ratWsXTTJLuMDAES8lHG591KhRoo+/IzsmKjDDOYVws2bNlIeTgZyQr0C4l73ToDuQ9u3bylcNcjfSES4tRWVeNAjn4GCPV0Jn5cqVly79snHjBjO3v8Qcnjt3Li4uLihoTGpqap067iyJSg1hxln4AwcOPHv2rHr1qt9/r3tPrnNnL1OEo1v6fPjwIYRbv173UgyYMGE8xFIpi1D/3XffouPp+T68FH3AiKQ+mtQRYR7krS06b95c//QURK9UqYJmAsTRybXrrVu3wGPV92mGDRuquYeGhGN6VQ+i5kqkI1xY2CZThFPO+P79P5o2bUpycjL8MJXx2dsXbt++HcoTJ45v2bI5P7p166qZNzDjcCs8PBwdd3c3mXFTSQaEY8T4+PibN5Owi2IOAUbIFPtZZnJGdNq0aaV6J2rBgi9tbAqwA6omIpjMQYN0nwcYOnSwvBwPOGqIrnnUnAmNGzdEZ/PmcAineolm/PhxmnvI6Bzp/v37CV5dXd+UhD13Ix3hLlw4b+qSB2szd+4cdDgRhwwZzI8RI4abevqNqFwuRjRp0oj0kx8TJ07QVBbC4coxHnir1atXo4w90FweVhqW//nnn5GRe7CLyqs3GGbNGwnS+ZEjhwkDaChvwhoCT0dDTcdK/YIFX6DToUN7wzdnOXzNDJ15kxehFy1aVKFCedX3K5YsWayZZmFiOXNw8bGxsVD2559/1jfIvUhHONCiRTOMvGoNmBdcBhE9XrJkyeJ79+5FkzCFOVL5FxqyHjVqVGPGt23bioGhCcqxsTH8VoVxKEOIevV0l6+wQzRMSrrB7z17dkNZFe9RptLX1wcFPz+fZs2aKt/vePjwdxcXZ2OXDQlw5SiEhoYWK2Z/5coV0VeQmvqsWbMmGG/V8RJZEkIQOQB+K6YUTJkyydo6n0ofKVDASh5E6NixQ69ePUVZQWJiIkenSrPoBBbKN2wCAwPc3GpiQUU/F0NNOPJQSIAo641dyZ8/7+TJk9jKVLZqpTuPBTNnzrSyymu40kwrxok45unTFFzMoEF/fcuD3/nyva4QlP4hBIu9bds22Fm/fp0RI/764Jy3d/f8+XWfXVKUWZuqVXVf6YK7jCheWAEG1coqn+GewBgIumHDBrwVaaZ8PscYiYkJGCROBuV4GZT9FKvm4zOgfv16hjxISdEdF/RSTh5+WFvnlw+LrF27hqkjrRFlQwQEjEg7or8OnxObsYgQMNWQTy455XqoCQd27IggnGI6ChWyYSXwdHLuLl78fcWKLkyQqAnwszgF1FCGPWnJo+498mHDhmA8lA8cCUJCgphZUaZ/ohaiRur9/YcRY+FVRU0wdOgQ1iNN2RZqtmvXBo8PNbHB8jKECvPnz3N2/mtPsLLLlum+WiKfM1K9KGoIbHDbtq0hirTFDskLQRwIexsTo3Zz9+/f79OnN9adUwvhB6cH/WPGqlSpJG8GaSI4OMjJSfcKjxx+gwb1oqOjqffweM/YKOZ8EAlcu3ZNX8gwNAgnOHQomqAH8glpmEcvLw/Nc5cICTWU5SodOSlnc//+/QxfU1DAam3fvg1l+bDcs2cpI0cG4CKpFwVDkOuFh4etX7+OzJTi1atXe/TwnjzZ5LUD9kQ6l8/DUPPZZ8G9e39o/PVCY5w6dRL7xHC//fYbxRUrVnTq1PHIkSOy1Rh4W/TXrVsroSRBWOfOnosX614GMwM6Dw/ftHr1qp9++onigwcPfH0HEA2rPu+V80FWVLFiRTs7u8zGnSYJp+Dp02TIQSalL5sFJNu5c4fhCwpmcP/+vV27dgqZXoobN65v2bJZ86OCmoDBe/dGmvqUmBmw9ocPH8bRy22PjIBDCAsLM/zYRUYA+SIiIiCuFFnCHj16vGka9erV27x5syhnFTBRnTp1qlWrFvuvr3qBPXv2NGjQoHXr1iqfJvjiiy/ypCGzH4t9OeEs+HuwZs0aWUIzePvtt/XaWYRRo0ZJz82apXtTk7POzc1NNk2apAvfDfHkyZOaNWuyacwYXeyRKVgIl1NAKFm9enUCZ4CrksUGBQoUkMpSpUotX6575zwLgU2VUbBz+qo0YK3JhmTT3Lnqy9FE2/jTrl276suZgYVwOQiPHz8mbAXbt2+XxQarVq2SSsMwN6tivrfeektG+fjjdF+VJOotWrSobCKc1dcaQDPmVmBm9yyEy4nYu3evLDYwDENJNfz9/Vu1aoW/I8D66KOPJM8VzJ49mzgvMDCQ3M7X17dOnTqNGzcOCgoyE1zSiYwSEqK78a3g+vXr+fLlk03yyI8A8nXp0oWeGzVq1K1btyVL0l3KIZYdPXp027ZtCQrZkw8++MD4I7IWwuVEhIaGymJbW1tfuKD7HxVg48aNUmkIaCGEuHLlir4qTx4bGxv9rzQ0b95cdclJQChWtWpV0alcuTIBogKYKvVAOI2y4n8N8e6778p1DDIt9lZfawAVKS2Ey4mYN2+erJa9vf2NG7q7L2Dp0qWvvfaas7MzwVPfvn0J+EQHi8LWY8eOSREQ9nl6emJj9OU8eb788kvpxBD37t1TAjVTyJs3rzB+ypQp+qo8eXDExHxWVlZSlEe1d+/e/frrrxNoenh4YHrr1q0rW9lPw3zfQriciLFjx8pqlS1b1vDi+bVr165evZqQkBAfH79gwQLRqVSpEpv27dsnRWye/FODlJSUpk2bSiX8S+sgHfCbhtmJJgoXLnzr1i1isgoVKkjN4MG6O+mA7FVqXFxc5N4xkV9iYiK29uLFi6tXr4Z/bC1SpIjhxSwL4XIiBg0aJGvp6uqqr9L9A7EEHx8ffJ9sUoAJYeu6deukSP4o+mDChAlSSdinrzLA6dOnMZmi8M0338j3xQTBwcFSX65cOewT1FTsmXLhLSoqSmpsbW2hGvZy+PDhNWrUkEoFxYsXJ+ORJsBCuJwIb29vWS2FKMnJyQ0bNpRKfOicOXPwqlKkHoWvvvpKipgiaQIU4uLm9FUGUBgDVPeQZs2aJfXCZuxW/vz5pUZ5mxMbJjWOjo5EeKQIUqxfvz7pC8mNFMuXL2/4j/wshMuJaNeunayWQhR8qFgjFl48FK5NdN55R/cZeMXB4cgWL15MlkAUj3WRymnTpqV1kw6bN2+WrQT7qn+0N2zYMNlENkoRPmHqpIZNpL3sQ7NmzaSmY8eOjx8/dnBwkOKhQ4doMn36dCm6u+se2FFgIVyOQ9r3+dxltXr37i2V+Cwl9yTr7NChg/wGvXrpHoz95JNP9OU0YHWU6xpQQck8DLFo0SJRKFq0qOo1s549e8om8gOpwWhJDaBzIjN9IU8e+Q8tZDNSrF27tpeXl/wGKm9uIVyOA4RTvCeZgb7WwM0JlCRU3oBUKEKQR24rvwHkUP5ljwrKxZfGjRurbhz369dPNilvHoGAgACSVqkXQDtcuWxdtmyZ4VblCp+fn58oCCyEy4mIiYnx9fUlUMOX6avSEBkZSWAOCeLi4kgMAwMDQ0JC5LquYvNQuHTpEnkuPWCW5KvWmqCHqVOn4ppV/7YAkA7jOsePHy/vTCk4ceLE559/Ts/g66+/Vjnio0ePjhw5kk1hYWF0Pm7cODhqmDEAC+H+eQgPD1+zZo08f6VAMYqvcEP974SFcP8wYPaEWIbPBRpeJ5P3vXMsLIT7h2H+/PlCLAndFPj7+5PGuri4ZPD5wv8vWAj3DwPR/Y8//kiCafzGzfnz5zWfss5RsBDOgr8VFsJZ8Dfi+fP/AqG7xdRDipSXAAAAAElFTkSuQmCC" alt="Logo shop">
 				</div>
                 <div class="store-name">MỘNG THẮM</div>
                 <div class="store-info">Long Giang, CM, AG</div>
                 <div class="store-info">ĐT: 0967.277377</div>
-				<!-- TIÊU ĐỀ SẼ THAY ĐỔI THEO LoaiGD -->
-                <h1 id="invoiceTitle">PHIẾU NHẬP HÀNG</h1>
+                <h1>PHIẾU NHẬP KHO</h1>
                 <div class="invoice-number">#<span id="maDon"></span></div>
             </div>
-			
-			<!-- THÔNG TIN KHÁCH HÀNG -->
+
             <div class="customer-info">
                 <p><span class="label">Nhà cung cấp:</span> <span id="tenNCC"></span></p>
                 <p><span class="label">Ngày Thanh toán:</span> <span id="ngayThanhToan"></span></p>
@@ -399,7 +394,6 @@
                 <p><span class="label">NV nhập:</span> <span id="nhanVien">Admin</span></p>
             </div>
 
-			<!-- DANH SÁCH SẢN PHẨM -->
             <div class="product-list" id="productList">
                 <div class="product-header">
                     <span class="hdr-qty">SL (ĐVT)</span>
@@ -408,36 +402,29 @@
                 </div>
             </div>
 
-			<!-- THÔNG TIN THANH TOÁN -->
             <div class="payment-info" id="paymentInfo">
-				<!-- Tổng tiền hàng -->
-                <div class="row" id="tongTienHangRow">
+                <div class="row">
                     <span class="label">Tổng tiền hàng:</span>
                     <span id="tongTienHang">0</span>
                 </div>
-				<!-- Nợ cũ -->
                 <div class="row" id="noCuRow">
                     <span class="label">Nợ cũ (nợ NCC):</span>
                     <span id="noCu">0</span>
                 </div>
-				<!-- Tổng thanh toán -->
-                <div class="row" id="tongThanhToanRow";padding-top:4px; margin-top:4px;">
+                <div class="row";padding-top:4px; margin-top:4px;">
                     <span class="label">Tổng thanh toán:</span>
                     <span class="total-amount" id="tongThanhToan">0</span>
                 </div>
-				<!-- Tiền khách đưa/trả/nợ thêm (label thay đổi theo LoaiGD) -->
                 <div class="row">
-                    <span class="label" id="tienduaNCCLabel">Tiền đưa NCC:</span>
+                    <span class="label">Tiền đưa NCC:</span>
                     <span id="tienDuaNCC">0</span>
                 </div>
-				<!-- Tiền thừa / Còn nợ lại (label thay đổi theo logic) -->
-                <div class="row" ; padding-top:4px;">
-                    <span class="label" id="thuaNoLabel">Tiền thừa/Nợ:</span>
+                <div class="row"; padding-top:4px;">
+                    <span class="label">Tiền thừa / Nợ:</span>
                     <span id="tienThuaNo">0</span>
                 </div>
             </div>
 
-			<!-- FOOTER -->
             <div class="footer">
                 <p class="thank-you">Cảm ơn Quý Công ty/Đại lý!</p>
                 <p id="debtNote" class="debt-note"></p>
@@ -447,15 +434,12 @@
         </div>
     </div>
 
-    <!-- NÚT IN -->
     <div class="no-print">
-        <button onclick="window.print()">🖨️ In hóa đơn</button>
+        <button onclick="window.print()">🖨️ In phiếu nhập</button>
         <button onclick="window.close()">✖️ Đóng</button>
     </div>
-	
-    <!-- JAVASCRIPT -->
+
     <script>
-	    // === HÀM ĐỊNH DẠNG NGÀY ===
         function formatDate(dateString) {
             if (!dateString || dateString === '') return 'Chưa thanh toán';
             try {
@@ -470,22 +454,6 @@
             }
         }
 
-        // === MAP TIÊU ĐỀ THEO LOẠI GIAO DỊCH ===
-		const titleMap = {
-            'Nhập kho': 'PHIẾU NHẬP KHO',
-            'Trả nợ': 'PHIẾU THANH TOÁN',
-            'Trả hàng NCC': 'PHIẾU TRẢ HÀNG',
-            'Nhập công nợ NCC': 'PHIẾU NHẬP CÔNG NỢ'
-        };
-		
-		// === MAP LABEL TIỀN ĐƯA NCC THEO LOẠI GIAO DỊCH ===
-        const tienDuaNCCLabelMap = {
-            'Nhập kho': 'Tiền đưa NCC:',
-            'Trả hàng NCC': 'Tiền đưa NCC:',
-            'Trả nợ': 'Tiền trả NCC:',
-            'Nhập công nợ NCC': 'Nợ thêm NCC:'
-        };
-		
         const urlParams = new URLSearchParams(window.location.search);
         const maDon = urlParams.get('maDon');
 
@@ -509,72 +477,39 @@
                     const formatMoney = (num) => {
                         return Number(num).toLocaleString('vi-VN') + 'đ';
                     };
-					
-					// === LẤY DỮ LIỆU ===
-					const loaiGD = data.loaiGD || '';
-                    const tt = data.thanhToan;
-                    const tienDuaNCC = Number(tt.tienDuaNCC) || 0;
-                    const tongThanhToan = Number(tt.tongThanhToan) || 0;
 
-                    // === THAY ĐỔI TIÊU ĐỀ ===
-                    document.getElementById('invoiceTitle').textContent = titleMap[loaiGD] || 'PHIẾU NHẬP HÀNG';
-
-                    // === THAY ĐỔI LABEL TIỀN ĐƯA NCC ===
-                    document.getElementById('tienDuaNCCLabel').textContent =
-                        tienDuaNCCLabelMap[loaiGD] || 'Tiền đưa NCC:';
-
-                    // === THAY ĐỔI LABEL TIỀN THỪA / CÒN NỢ ===
-                    const thuaNoLabel = document.getElementById('thuaNoLabel');
-                    if (tienDuaNCC >= tongThanhToan) {
-                        thuaNoLabel.textContent = 'Tiền thừa:';
-                    } else {
-                        thuaNoLabel.textContent = 'Còn nợ lại:';
-                    }
-					
-                    // === ĐIỀN THÔNG TIN CHUNG ===
                     document.getElementById('maDon').textContent = data.maDon;
                     document.getElementById('tenNCC').textContent = data.tenNCC;
                     document.getElementById('ngayThanhToan').textContent = formatDate(data.ngay);
-                    document.getElementById('loaiGD').textContent = loaiGD;
+                    document.getElementById('loaiGD').textContent = data.loaiGD;
 
-                    // === XÁC ĐỊNH LOẠI GIAO DỊCH ĐỂ ẨN/HIỆN ===
-                    const isTraNoOrNhapNo = (loaiGD === 'Trả nợ' || loaiGD === 'Nhập công nợ NCC');
-					
-                    // Ẩn/hiện sản phẩm
-                    document.getElementById('productList').style.display = isTraNoOrNhapNo ? 'none' : 'block';
+                    // === HIỂN THỊ SẢN PHẨM ===
+                    const productList = document.getElementById('productList');
+                    const headerElement = productList.querySelector('.product-header');
+                    productList.innerHTML = '';
+                    productList.appendChild(headerElement);
 
-                    // Ẩn/hiện các dòng thanh toán
-                    document.getElementById('tongTienHangRow').style.display = isTraNoOrNhapNo ? 'none' : 'flex';
-                    document.getElementById('tongThanhToanRow').style.display = isTraNoOrNhapNo ? 'none' : 'flex';
-
-                    // ===== HIỂN THỊ SẢN PHẨM =====
-                    if (!isTraNoOrNhapNo) {
-                        const productList = document.getElementById('productList');
-                        const headerElement = productList.querySelector('.product-header');
-                        productList.innerHTML = '';
-                        productList.appendChild(headerElement);
-
-                        if (data.chiTiet.length === 0) {
-                            productList.innerHTML += '<div style="text-align:center;padding:10px 0;">Không có sản phẩm</div>';
-                        } else {
-                            let html = '';
-                            data.chiTiet.forEach((item, index) => {
-                                html += `
-                                    <div class="product-row">
-                                        <div class="product-name">${index + 1}. ${item.tenSanPham}</div>
-                                        <div class="product-detail">
-                                            <span class="col-qty">${item.soLuong} (${item.dvt})</span>
-                                            <span class="col-price">${formatMoney(item.donGia)}</span>
-                                            <span class="col-amount">${formatMoney(item.thanhTien)}</span>
-                                        </div>
+                    if (data.chiTiet.length === 0) {
+                        productList.innerHTML += '<div style="text-align:center;padding:10px 0;">Không có sản phẩm</div>';
+                    } else {
+                        let html = '';
+                        data.chiTiet.forEach((item, index) => {
+                            html += `
+                                <div class="product-row">
+                                    <div class="product-name">${index + 1}. ${item.tenSanPham}</div>
+                                    <div class="product-detail">
+                                        <span class="col-qty">${item.soLuong} (${item.dvt})</span>
+                                        <span class="col-price">${formatMoney(item.donGia)}</span>
+                                        <span class="col-amount">${formatMoney(item.thanhTien)}</span>
                                     </div>
-                                `;
-                            });
-                            productList.innerHTML += html;
-                        }
+                                </div>
+                            `;
+                        });
+                        productList.innerHTML += html;
                     }
-					
+
                     // === THÔNG TIN THANH TOÁN ===
+                    const tt = data.thanhToan;
                     document.getElementById('tongTienHang').textContent = formatMoney(tt.tongTienHang || 0);
 
                     const noCu = tt.noCu || 0;
@@ -584,8 +519,8 @@
                         document.getElementById('noCuRow').style.display = 'none';
                     }
 
-                    document.getElementById('tongThanhToan').textContent = formatMoney(tongThanhToan);
-                    document.getElementById('tienDuaNCC').textContent = formatMoney(tienDuaNCC);
+                    document.getElementById('tongThanhToan').textContent = formatMoney(tt.tongThanhToan || 0);
+                    document.getElementById('tienDuaNCC').textContent = formatMoney(tt.tienDuaNCC || 0);
 
                     const tienThuaNo = tt.tienThuaNo || 0;
                     const tienThuaNoSpan = document.getElementById('tienThuaNo');
@@ -598,7 +533,7 @@
                     // === GHI CHÚ CÔNG NỢ ===
                     const debtNote = document.getElementById('debtNote');
                     if (tienThuaNo < 0) {
-                        debtNote.textContent = '⚠️ Còn nợ nhà cung cấp: ' + formatMoney(Math.abs(tienThuaNo));
+                        debtNote.textContent = '⚠️ Bạn còn nợ nhà cung cấp: ' + formatMoney(Math.abs(tienThuaNo));
                         debtNote.style.display = 'block';
                     } else if (noCu > 0) {
                         debtNote.textContent = '✅ Đã thanh toán';
