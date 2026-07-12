@@ -247,12 +247,12 @@
                     <span class="label">Tổng thanh toán:</span>
                     <span class="total-amount" id="tongThanhToan">0</span>
                 </div>
-                <!-- Tiền đưa/trả/nợ thêm NCC (label thay đổi theo LoaiGD) -->
+                <!-- Tiền đưa NCC -->
                 <div class="row">
                     <span class="label" id="tienDuaNCCLabel">Tiền đưa NCC</span>
                     <span id="tienDuaNCC">0</span>
                 </div>
-                <!-- Tiền thừa / Còn nợ lại (label thay đổi theo logic) -->
+                <!-- Tiền thừa / Còn nợ lại -->
                 <div class="row" style="border-top:1px solid #000; padding-top:4px;">
                     <span class="label" id="thuaNoLabel">Tiền thừa</span>
                     <span id="tienThuaNo">0</span>
@@ -299,13 +299,8 @@
             'Nhập công nợ NCC': 'PHIẾU NHẬP CÔNG NỢ NCC'
         };
 
-        // === MAP LABEL TIỀN ĐƯA/TRẢ/NỢ THÊM NCC ===
-        const tienDuaNCCLabelMap = {
-            'Nhập kho': 'Tiền đưa NCC',
-            'Trả hàng NCC': 'Tiền đưa NCC',
-            'Trả nợ': 'Tiền trả NCC',
-            'Nhập công nợ NCC': 'Nợ thêm NCC'
-        };
+        // === MAP LABEL TIỀN ĐƯA NCC (nếu muốn thay đổi) ===
+        // Hiện tại giữ nguyên "Tiền đưa NCC" cho tất cả
 
         const urlParams = new URLSearchParams(window.location.search);
         const maDon = urlParams.get('maDon');
@@ -339,10 +334,6 @@
 
                     // === THAY ĐỔI TIÊU ĐỀ ===
                     document.getElementById('invoiceTitle').textContent = titleMap[loaiGD] || 'HÓA ĐƠN NHẬP HÀNG';
-
-                    // === THAY ĐỔI LABEL TIỀN ĐƯA/TRẢ/NỢ THÊM NCC ===
-                    document.getElementById('tienDuaNCCLabel').textContent =
-                        tienDuaNCCLabelMap[loaiGD] || 'Tiền đưa NCC';
 
                     // === LABEL TIỀN THỪA / CÒN NỢ ===
                     const thuaNoLabel = document.getElementById('thuaNoLabel');
