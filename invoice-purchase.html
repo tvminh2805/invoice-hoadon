@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hóa đơn mua hàng</title>
+    <title>Hóa đơn nhập hàng</title>
     <style>
         /* === RESET & CẤU HÌNH IN 80MM === */
 		@page{
@@ -372,7 +372,6 @@
 <body>
 
     <div class="invoice-80mm" id="invoiceContent">
-	    <!-- Loading -->
         <div id="loading" class="loading">⏳ Đang tải hóa đơn...</div>
 		
         <!-- Nội dung hóa đơn -->
@@ -388,7 +387,7 @@
                 <div class="store-info">Long Giang, CM, AG</div>
                 <div class="store-info">ĐT: 0967.277377</div>
 				<!-- TIÊU ĐỀ SẼ THAY ĐỔI THEO LoaiGD -->
-                <h1 id="invoiceTitle">PHIẾU NHẬP KHO</h1>
+                <h1 id="invoiceTitle">PHIẾU NHẬP HÀNG</h1>
                 <div class="invoice-number">#<span id="maDon"></span></div>
             </div>
 			
@@ -422,7 +421,7 @@
                     <span id="noCu">0</span>
                 </div>
 				<!-- Tổng thanh toán -->
-                <div class="row";padding-top:4px; margin-top:4px;">
+                <div class="row" id="tongThanhToanRow";padding-top:4px; margin-top:4px;">
                     <span class="label">Tổng thanh toán:</span>
                     <span class="total-amount" id="tongThanhToan">0</span>
                 </div>
@@ -433,7 +432,7 @@
                 </div>
 				<!-- Tiền thừa / Còn nợ lại (label thay đổi theo logic) -->
                 <div class="row" ; padding-top:4px;">
-                    <span class="label" id="thuaNoLabel">Tiền thừa / Nợ:</span>
+                    <span class="label" id="thuaNoLabel">Tiền thừa/Nợ:</span>
                     <span id="tienThuaNo">0</span>
                 </div>
             </div>
@@ -450,7 +449,7 @@
 
     <!-- NÚT IN -->
     <div class="no-print">
-        <button onclick="window.print()">🖨️ In phiếu nhập</button>
+        <button onclick="window.print()">🖨️ In hóa đơn</button>
         <button onclick="window.close()">✖️ Đóng</button>
     </div>
 	
@@ -480,11 +479,11 @@
         };
 		
 		// === MAP LABEL TIỀN ĐƯA NCC THEO LOẠI GIAO DỊCH ===
-        const tienduaNCCLabelMap = {
+        const tienDuaNCCLabelMap = {
             'Nhập kho': 'Tiền đưa NCC:',
             'Trả hàng NCC': 'Tiền đưa NCC:',
             'Trả nợ': 'Tiền trả NCC:',
-            'Nhập công nợ NCC': 'Tiền nợ thêm NCC:'
+            'Nhập công nợ NCC': 'Nợ thêm NCC:'
         };
 		
         const urlParams = new URLSearchParams(window.location.search);
@@ -513,7 +512,7 @@
 					
 					// === LẤY DỮ LIỆU ===
 					const loaiGD = data.loaiGD || '';
-                    const tt = data.thanhToanNCC;
+                    const tt = data.thanhToan;
                     const tienDuaNCC = Number(tt.tienDuaNCC) || 0;
                     const tongThanhToan = Number(tt.tongThanhToan) || 0;
 
@@ -521,8 +520,8 @@
                     document.getElementById('invoiceTitle').textContent = titleMap[loaiGD] || 'PHIẾU NHẬP HÀNG';
 
                     // === THAY ĐỔI LABEL TIỀN ĐƯA NCC ===
-                    document.getElementById('tienduaNCCLabel').textContent =
-                        tienduaNCCLabelMap[loaiGD] || 'Tiền đưa NCC:';
+                    document.getElementById('tienDuaNCCLabel').textContent =
+                        tienDuaNCCLabelMap[loaiGD] || 'Tiền đưa NCC:';
 
                     // === THAY ĐỔI LABEL TIỀN THỪA / CÒN NỢ ===
                     const thuaNoLabel = document.getElementById('thuaNoLabel');
@@ -536,7 +535,7 @@
                     document.getElementById('maDon').textContent = data.maDon;
                     document.getElementById('tenNCC').textContent = data.tenNCC;
                     document.getElementById('ngayThanhToan').textContent = formatDate(data.ngay);
-                    document.getElementById('loaiGD').textContent = data.loaiGD;
+                    document.getElementById('loaiGD').textContent = loaiGD;
 
                     // === XÁC ĐỊNH LOẠI GIAO DỊCH ĐỂ ẨN/HIỆN ===
                     const isTraNoOrNhapNo = (loaiGD === 'Trả nợ' || loaiGD === 'Nhập công nợ NCC');
@@ -574,6 +573,7 @@
                             productList.innerHTML += html;
                         }
                     }
+					
                     // === THÔNG TIN THANH TOÁN ===
                     document.getElementById('tongTienHang').textContent = formatMoney(tt.tongTienHang || 0);
 
@@ -584,8 +584,8 @@
                         document.getElementById('noCuRow').style.display = 'none';
                     }
 
-                    document.getElementById('tongThanhToan').textContent = formatMoney(tt.tongThanhToan || 0);
-                    document.getElementById('tienDuaNCC').textContent = formatMoney(tt.tienDuaNCC || 0);
+                    document.getElementById('tongThanhToan').textContent = formatMoney(tongThanhToan);
+                    document.getElementById('tienDuaNCC').textContent = formatMoney(tienDuaNCC);
 
                     const tienThuaNo = tt.tienThuaNo || 0;
                     const tienThuaNoSpan = document.getElementById('tienThuaNo');
