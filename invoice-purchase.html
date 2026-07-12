@@ -470,8 +470,8 @@
                 '<div class="error">❌ Không có mã đơn hàng</div>';
         } else {
             // === THAY URL NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN ===
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNTWdRVvONulNqMc8KKUHuYQTapbKCyhiODGHWFt9MGWVAzlLwT7m0KTwI5F6jI_Jn/exec';
-
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybBRZ2VE_L9XRsEdKLFaaP3r0OaLR5kIFGrgf6m-MkjTI94Jjmut5STmVeJwiNbE7s/exec';
+            
             fetch(`${SCRIPT_URL}?maDon=${maDon}`)
                 .then(res => res.json())
                 .then(data => {
