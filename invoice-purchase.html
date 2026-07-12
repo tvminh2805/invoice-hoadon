@@ -1,434 +1,131 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hóa đơn nhập hàng</title>
-    <style>
-        /* === GIỮ NGUYÊN CSS NHƯ PHIÊN BẢN TRƯỚC === */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f0f0f0;
-            margin: 0;
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            color: #000;
-        }
-        .invoice-80mm {
-            width: 80mm;
-            max-width: 100%;
-            padding: 1mm 0.5mm;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            border-bottom: 1px dashed #000;
-            padding-bottom: 6px;
-            margin-bottom: 6px;
-        }
-        .header .store-name { font-size: 15px; font-weight: bold; color: #000; }
-        .header .store-info { font-size: 10px; color: #000; }
-        .header h1 {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 4px 0;
-            color: #000;
-        }
-        .header .invoice-number { font-size: 13px; font-weight: bold; color: #000; }
-        .customer-info {
-            border-bottom: 1px dashed #000;
-            padding-bottom: 6px;
-            margin-bottom: 6px;
-            font-size: 11px;
-            color: #000;
-        }
-        .customer-info p {
-            margin: 2px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-        .customer-info .label { font-weight: bold; color: #000; }
-        .customer-info span { color: #000; }
-        .product-list { margin: 4px 0; }
-        .product-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 9px;
-            font-weight: bold;
-            border-bottom: 1px solid #000;
-            padding: 3px 0 4px 0;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            color: #000;
-        }
-        .product-header .hdr-qty { width: 28%; text-align: left; padding-left: 2px; }
-        .product-header .hdr-price { width: 32%; text-align: right; padding-right: 2px; }
-        .product-header .hdr-amount { width: 36%; text-align: right; padding-right: 2px; }
-        .product-row {
-            border-bottom: 1px dotted #000;
-            padding: 4px 0;
-            display: block;
-        }
-        .product-name {
-            font-weight: bold;
-            font-size: 11px;
-            padding: 2px 0;
-            display: block;
-        }
-        .product-detail {
-            font-size: 10px;
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0 4px 0;
-            padding-left: 2px;
-        }
-        .product-detail .col-qty { width: 28%; text-align: left; }
-        .product-detail .col-price { width: 32%; text-align: right; padding-right: 2px; }
-        .product-detail .col-amount { width: 36%; text-align: right; padding-right: 2px; font-weight: bold; }
-        .payment-info {
-            border-top: 1px dashed #000;
-            border-bottom: 1px dashed #000;
-            padding: 6px 0;
-            margin: 6px 0;
-            font-size: 11px;
-            color: #000;
-        }
-        .payment-info .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-            color: #000;
-        }
-        .payment-info .row.hidden-row { display: none; }
-        .payment-info .label { font-weight: bold; color: #000; }
-        .payment-info .total-amount { font-size: 14px; font-weight: bold; color: #000; padding-right: 2px; }
-        .payment-info .debt { font-weight: bold; color: #000; }
-        .payment-info .paid { font-weight: bold; color: #000; }
-        .payment-info span { color: #000; }
-        .footer {
-            text-align: center;
-            border-top: 1px dashed #000;
-            padding-top: 6px;
-            margin-top: 8px;
-            font-size: 9px;
-            color: #000;
-        }
-        .footer .thank-you { font-size: 12px; font-weight: bold; margin: 4px 0; color: #000; }
-        .footer .debt-note { font-weight: bold; font-size: 10px; margin: 4px 0; color: #000; }
-        .footer p { color: #000; }
-
-        @media print {
-            @page { margin: 0mm !important; size: 80mm auto; }
-            body {
-                background: #fff !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                display: block !important;
-                align-items: normal !important;
-                min-height: auto !important;
-                width: 80mm !important;
-            }
-            .invoice-80mm {
-                width: 80mm !important;
-                max-width: 80mm !important;
-                padding: 0.5mm 0mm !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                border-radius: 0 !important;
-                background: #fff !important;
-            }
-            .header, .customer-info, .product-list, .payment-info, .footer {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-            .no-print { display: none !important; }
-            * { color: #000 !important; border-color: #000 !important; }
-            .product-header .hdr-amount { padding-right: 1px !important; }
-            .product-detail .col-amount { padding-right: 1px !important; }
-            .payment-info .row span:last-child { padding-right: 1px !important; }
-        }
-
-        .no-print {
-            text-align: center;
-            padding: 15px 0;
-            margin-top: 15px;
-            width: 100%;
-            max-width: 80mm;
-        }
-        .no-print button {
-            padding: 10px 25px;
-            font-size: 14px;
-            background: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 5px;
-        }
-        .no-print button:hover { background: #45a049; }
-        .no-print button:last-child { background: #666; }
-        .no-print button:last-child:hover { background: #555; }
-        .loading, .error {
-            text-align: center;
-            padding: 20px 0;
-            font-size: 13px;
-            color: #000;
-        }
-        .error { color: #000; font-weight: bold; }
-
-        @media screen and (max-width: 80mm) {
-            body { padding: 10px 5px; }
-            .invoice-80mm { width: 100%; padding: 1mm 2mm; }
-        }
-        @media screen and (max-width: 480px) {
-            .invoice-80mm { padding: 2mm 2mm; }
-            .product-name { font-size: 10px; }
-            .product-detail { font-size: 9px; flex-wrap: wrap; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="invoice-80mm" id="invoiceContent">
-        <div id="loading" class="loading">⏳ Đang tải hóa đơn...</div>
-
-        <div id="invoiceData" style="display:none;">
-
-            <!-- HEADER -->
-            <div class="header">
-                <div class="store-name">CỬA HÀNG CỦA BẠN</div>
-                <div class="store-info">123 Đường ABC, Quận 1, TP.HCM</div>
-                <div class="store-info">ĐT: 0123 456 789</div>
-                <h1 id="invoiceTitle">HÓA ĐƠN NHẬP HÀNG</h1>
-                <div class="invoice-number">#<span id="maDon"></span></div>
-            </div>
-
-            <!-- THÔNG TIN NHÀ CUNG CẤP -->
-            <div class="customer-info">
-                <p><span class="label">Nhà cung cấp:</span> <span id="tenNCC"></span></p>
-                <p><span class="label">Ngày thanh toán:</span> <span id="ngayThanhToan"></span></p>
-                <p><span class="label">Loại giao dịch:</span> <span id="loaiGD"></span></p>
-                <p><span class="label">NV nhập:</span> <span id="nhanVien">Admin</span></p>
-            </div>
-
-            <!-- DANH SÁCH SẢN PHẨM -->
-            <div class="product-list" id="productList">
-                <div class="product-header">
-                    <span class="hdr-qty">SL (ĐVT)</span>
-                    <span class="hdr-price">GN</span>
-                    <span class="hdr-amount">TT</span>
-                </div>
-            </div>
-
-            <!-- THÔNG TIN THANH TOÁN -->
-            <div class="payment-info" id="paymentInfo">
-                <!-- Tổng tiền hàng -->
-                <div class="row" id="tongTienHangRow">
-                    <span class="label">Tổng tiền hàng:</span>
-                    <span id="tongTienHang">0</span>
-                </div>
-                <!-- Nợ cũ -->
-                <div class="row" id="noCuRow">
-                    <span class="label">Nợ cũ:</span>
-                    <span id="noCu">0</span>
-                </div>
-                <!-- Tổng thanh toán -->
-                <div class="row" id="tongThanhToanRow" style="border-top:1px solid #000; padding-top:4px; margin-top:4px;">
-                    <span class="label">Tổng thanh toán:</span>
-                    <span class="total-amount" id="tongThanhToan">0</span>
-                </div>
-                <!-- Tiền đưa NCC -->
-                <div class="row">
-                    <span class="label" id="tienDuaNCCLabel">Tiền đưa NCC</span>
-                    <span id="tienDuaNCC">0</span>
-                </div>
-                <!-- Tiền thừa / Còn nợ lại -->
-                <div class="row" style="border-top:1px solid #000; padding-top:4px;">
-                    <span class="label" id="thuaNoLabel">Tiền thừa</span>
-                    <span id="tienThuaNo">0</span>
-                </div>
-            </div>
-
-            <!-- FOOTER -->
-            <div class="footer">
-                <p class="thank-you">CẢM ƠN NHÀ CUNG CẤP!</p>
-                <p id="debtNote" class="debt-note"></p>
-                <p>Hàng đã nhập không trả lại</p>
-                <p>--- Hóa đơn xuất từ phần mềm ---</p>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="no-print">
-        <button onclick="window.print()">🖨️ In hóa đơn</button>
-        <button onclick="window.close()">✖️ Đóng</button>
-    </div>
-
-    <script>
-        // === HÀM ĐỊNH DẠNG NGÀY ===
-        function formatDate(dateString) {
-            if (!dateString || dateString === '') return 'Chưa thanh toán';
-            try {
-                const date = new Date(dateString);
-                if (isNaN(date.getTime())) return dateString;
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const year = date.getFullYear();
-                return `${day}/${month}/${year}`;
-            } catch (e) {
-                return dateString;
+function doGet(e) {
+    try {
+        const maDon = e.parameter.maDon || '';
+        if (!maDon) throw new Error('Thiếu mã đơn hàng');
+        
+        // === CHỈ ĐỊNH RÕ FILE GOOGLE SHEETS ===
+        const SHEET_ID = '1A2B3C4D5E6F7G8H9I0J'; // ← THAY BẰNG ID CỦA BẠN
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+        
+        // === LẤY DỮ LIỆU TỪ 3 SHEET ===
+        const sheetDH_NCC = ss.getSheetByName('DH_NCC');
+        const sheetDHCT_NCC = ss.getSheetByName('DHCT_NCC');
+        const sheetThanhToan_NCC = ss.getSheetByName('ThanhToan_NCC');
+        
+        if (!sheetDH_NCC) throw new Error('Không tìm thấy sheet "DH_NCC"');
+        if (!sheetDHCT_NCC) throw new Error('Không tìm thấy sheet "DHCT_NCC"');
+        if (!sheetThanhToan_NCC) throw new Error('Không tìm thấy sheet "ThanhToan_NCC"');
+        
+        // === 1. LẤY THÔNG TIN CHÍNH ===
+        const donHangData = sheetDH_NCC.getDataRange().getValues();
+        const headerDon = donHangData[0];
+        const idDHIndex = headerDon.indexOf('IDDH_NCC');
+        const ngayNhapIndex = headerDon.indexOf('NgayNhap');
+        const tenNCCIndex = headerDon.indexOf('TenNCC');
+        const loaiGDIndex = headerDon.indexOf('LoaiGD');
+        
+        let donHang = null;
+        for (let i = 1; i < donHangData.length; i++) {
+            if (String(donHangData[i][idDHIndex]) == maDon) {
+                donHang = donHangData[i];
+                break;
             }
         }
-
-        // === MAP TIÊU ĐỀ THEO LOẠI GIAO DỊCH ===
-        const titleMap = {
-            'Nhập kho': 'HÓA ĐƠN NHẬP KHO',
-            'Trả hàng NCC': 'PHIẾU TRẢ HÀNG NCC',
-            'Trả nợ': 'PHIẾU TRẢ NỢ NCC',
-            'Nhập công nợ NCC': 'PHIẾU NHẬP CÔNG NỢ NCC'
-        };
-
-        // === MAP LABEL TIỀN ĐƯA NCC (nếu muốn thay đổi) ===
-        // Hiện tại giữ nguyên "Tiền đưa NCC" cho tất cả
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const maDon = urlParams.get('maDon');
-
-        if (!maDon) {
-            document.getElementById('loading').innerHTML =
-                '<div class="error">❌ Không có mã đơn hàng</div>';
-        } else {
-            // === THAY URL NÀY BẰNG URL GOOGLE APPS SCRIPT CỦA BẠN ===
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNTWdRVvONulNqMc8KKUHuYQTapbKCyhiODGHWFt9MGWVAzlLwT7m0KTwI5F6jI_Jn/exec';
-
-            fetch(`${SCRIPT_URL}?maDon=${maDon}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success) {
-                        throw new Error(data.error || 'Lỗi không xác định');
-                    }
-
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('invoiceData').style.display = 'block';
-
-                    const formatMoney = (num) => {
-                        return Number(num).toLocaleString('vi-VN') + 'đ';
-                    };
-
-                    // === LẤY DỮ LIỆU ===
-                    const loaiGD = data.loaiGD || '';
-                    const tt = data.thanhToan;
-                    const tienDuaNCC = Number(tt.tienDuaNCC) || 0;
-                    const tongThanhToan = Number(tt.tongThanhToan) || 0;
-
-                    // === THAY ĐỔI TIÊU ĐỀ ===
-                    document.getElementById('invoiceTitle').textContent = titleMap[loaiGD] || 'HÓA ĐƠN NHẬP HÀNG';
-
-                    // === LABEL TIỀN THỪA / CÒN NỢ ===
-                    const thuaNoLabel = document.getElementById('thuaNoLabel');
-                    if (tienDuaNCC >= tongThanhToan) {
-                        thuaNoLabel.textContent = 'Tiền thừa';
-                    } else {
-                        thuaNoLabel.textContent = 'Còn nợ lại';
-                    }
-
-                    // === ĐIỀN THÔNG TIN CHUNG ===
-                    document.getElementById('maDon').textContent = data.maDon;
-                    document.getElementById('tenNCC').textContent = data.tenNCC;
-                    document.getElementById('ngayThanhToan').textContent = formatDate(data.ngay);
-                    document.getElementById('loaiGD').textContent = loaiGD;
-
-                    // === XÁC ĐỊNH LOẠI GIAO DỊCH ĐỂ ẨN/HIỆN ===
-                    const isTraNoOrNhapNo = (loaiGD === 'Trả nợ' || loaiGD === 'Nhập công nợ NCC');
-
-                    // Ẩn/hiện sản phẩm
-                    document.getElementById('productList').style.display = isTraNoOrNhapNo ? 'none' : 'block';
-
-                    // Ẩn/hiện các dòng thanh toán
-                    document.getElementById('tongTienHangRow').style.display = isTraNoOrNhapNo ? 'none' : 'flex';
-                    document.getElementById('tongThanhToanRow').style.display = isTraNoOrNhapNo ? 'none' : 'flex';
-
-                    // === HIỂN THỊ SẢN PHẨM (nếu có) ===
-                    if (!isTraNoOrNhapNo) {
-                        const productList = document.getElementById('productList');
-                        const headerElement = productList.querySelector('.product-header');
-                        productList.innerHTML = '';
-                        productList.appendChild(headerElement);
-
-                        if (data.chiTiet.length === 0) {
-                            productList.innerHTML += '<div style="text-align:center;padding:10px 0;">Không có sản phẩm</div>';
-                        } else {
-                            let html = '';
-                            data.chiTiet.forEach((item, index) => {
-                                html += `
-                                    <div class="product-row">
-                                        <div class="product-name">${index + 1}. ${item.tenSanPham}</div>
-                                        <div class="product-detail">
-                                            <span class="col-qty">${item.soLuong} (${item.dvt})</span>
-                                            <span class="col-price">${formatMoney(item.donGia)}</span>
-                                            <span class="col-amount">${formatMoney(item.thanhTien)}</span>
-                                        </div>
-                                    </div>
-                                `;
-                            });
-                            productList.innerHTML += html;
-                        }
-                    }
-
-                    // === THÔNG TIN THANH TOÁN ===
-                    document.getElementById('tongTienHang').textContent = formatMoney(tt.tongTienHang || 0);
-
-                    const noCu = tt.noCu || 0;
-                    if (noCu > 0) {
-                        document.getElementById('noCu').textContent = formatMoney(noCu);
-                    } else {
-                        document.getElementById('noCuRow').style.display = 'none';
-                    }
-
-                    document.getElementById('tongThanhToan').textContent = formatMoney(tongThanhToan);
-                    document.getElementById('tienDuaNCC').textContent = formatMoney(tienDuaNCC);
-
-                    const tienThuaNo = tt.tienThuaNo || 0;
-                    const tienThuaNoSpan = document.getElementById('tienThuaNo');
-                    if (tienThuaNo >= 0) {
-                        tienThuaNoSpan.textContent = formatMoney(tienThuaNo);
-                    } else {
-                        tienThuaNoSpan.textContent = '-' + formatMoney(Math.abs(tienThuaNo));
-                    }
-
-                    // === GHI CHÚ CÔNG NỢ ===
-                    const debtNote = document.getElementById('debtNote');
-                    if (tienThuaNo < 0) {
-                        debtNote.textContent = '⚠️ Bạn còn nợ nhà cung cấp: ' + formatMoney(Math.abs(tienThuaNo));
-                        debtNote.style.display = 'block';
-                    } else if (noCu > 0) {
-                        debtNote.textContent = '✅ Đã thanh toán hết nợ cũ';
-                    } else {
-                        debtNote.style.display = 'none';
-                    }
-
-                    // Tự động in
-                    setTimeout(() => {
-                        window.print();
-                    }, 1500);
-                })
-                .catch(error => {
-                    document.getElementById('loading').innerHTML =
-                        `<div class="error">❌ Lỗi: ${error.message}</div>`;
+        if (!donHang) throw new Error('Không tìm thấy đơn hàng #' + maDon);
+        
+        // === 2. LẤY CHI TIẾT ĐƠN HÀNG ===
+        const chiTietData = sheetDHCT_NCC.getDataRange().getValues();
+        const headerCT = chiTietData[0];
+        const idDHCTIndex = headerCT.indexOf('IDDH_NCC');
+        const tenHHIndex = headerCT.indexOf('TenHH');
+        const dvtIndex = headerCT.indexOf('DVT');
+        const slNhapIndex = headerCT.indexOf('SLNhap');
+        const giaNhapIndex = headerCT.indexOf('GiaNhap');
+        const thanhTienIndex = headerCT.indexOf('ThanhTien');
+        
+        const chiTiet = [];
+        for (let i = 1; i < chiTietData.length; i++) {
+            if (String(chiTietData[i][idDHCTIndex]) == maDon) {
+                chiTiet.push({
+                    tenSanPham: String(chiTietData[i][tenHHIndex]) || '',
+                    dvt: String(chiTietData[i][dvtIndex]) || '',
+                    soLuong: Number(chiTietData[i][slNhapIndex]) || 0,
+                    donGia: Number(chiTietData[i][giaNhapIndex]) || 0,
+                    thanhTien: Number(chiTietData[i][thanhTienIndex]) || 0
                 });
+            }
         }
-    </script>
-
-</body>
-</html>
+        
+        // === 3. LẤY THÔNG TIN THANH TOÁN (ƯU TIÊN) ===
+        const thanhToanData = sheetThanhToan_NCC.getDataRange().getValues();
+        const headerTT = thanhToanData[0];
+        const idDHTTIndex = headerTT.indexOf('IDDH_NCC');
+        const ngayTTIndex = headerTT.indexOf('Ngay');           // Lấy ngày từ ThanhToan_NCC
+        const tenNCCCTIndex = headerTT.indexOf('TenNCC');
+        const loaiGDTTIndex = headerTT.indexOf('LoaiGD');
+        const tongTienHangIndex = headerTT.indexOf('TongTienHang');
+        const noCuIndex = headerTT.indexOf('NoCu');
+        const tongThanhToanIndex = headerTT.indexOf('TongThanhToan');
+        const tienDuaNCCIndex = headerTT.indexOf('TienDuaNCC');
+        const tienThuaNoIndex = headerTT.indexOf('TienThua_No');
+        
+        let thanhToan = null;
+        for (let i = 1; i < thanhToanData.length; i++) {
+            if (String(thanhToanData[i][idDHTTIndex]) == maDon) {
+                thanhToan = thanhToanData[i];
+                break;
+            }
+        }
+        
+        // === XỬ LÝ DỮ LIỆU THANH TOÁN ===
+        // Nếu chưa có dữ liệu thanh toán, lấy từ sheet DH_NCC
+        if (!thanhToan) {
+            // Tính tổng tiền hàng từ chi tiết
+            let tongTienHang = 0;
+            chiTiet.forEach(item => tongTienHang += item.thanhTien);
+            
+            thanhToan = {
+                ngay: String(donHang[ngayNhapIndex]) || '',  // Lấy ngày nhập từ DH_NCC
+                tenNCC: String(donHang[tenNCCIndex]) || 'Nhà cung cấp',
+                loaiGD: String(donHang[loaiGDIndex]) || 'Mua hàng',
+                tongTienHang: tongTienHang,
+                noCu: 0,
+                tongThanhToan: tongTienHang,
+                tienDuaNCC: 0,
+                tienThuaNo: -tongTienHang // Còn nợ nhà cung cấp
+            };
+        } else {
+            // Ưu tiên lấy thông tin từ sheet ThanhToan_NCC
+            thanhToan = {
+                ngay: String(thanhToan[ngayTTIndex]) || '',  // Lấy ngày từ ThanhToan_NCC
+                tenNCC: String(thanhToan[tenNCCCTIndex]) || 'Nhà cung cấp',
+                loaiGD: String(thanhToan[loaiGDTTIndex]) || 'Mua hàng',
+                tongTienHang: Number(thanhToan[tongTienHangIndex]) || 0,
+                noCu: Number(thanhToan[noCuIndex]) || 0,
+                tongThanhToan: Number(thanhToan[tongThanhToanIndex]) || 0,
+                tienDuaNCC: Number(thanhToan[tienDuaNCCIndex]) || 0,
+                tienThuaNo: Number(thanhToan[tienThuaNoIndex]) || 0
+            };
+        }
+        
+        // === 4. TRẢ VỀ JSON ===
+        const result = {
+            success: true,
+            maDon: maDon,
+            ngay: thanhToan.ngay,              // Ngày thanh toán (ưu tiên từ ThanhToan_NCC)
+            tenNCC: thanhToan.tenNCC,
+            loaiGD: thanhToan.loaiGD,
+            chiTiet: chiTiet,
+            thanhToan: thanhToan
+        };
+        
+        return ContentService.createTextOutput(JSON.stringify(result))
+            .setMimeType(ContentService.MimeType.JSON);
+            
+    } catch (error) {
+        return ContentService.createTextOutput(JSON.stringify({
+            success: false,
+            error: error.message
+        })).setMimeType(ContentService.MimeType.JSON);
+    }
+}
